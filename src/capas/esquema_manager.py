@@ -25,7 +25,14 @@ class EsquemaManager(BaseDatabaseSchemaEditor):
                         "old_column": anterior,
                         "new_column": nuevo
                     }
-            if tipo is not None:
-                params["type"] = tipo
             sql = self.sql_rename_column % params
             self.execute(sql)
+            if tipo is not None:
+                sql = self.sql_alter_column % {
+                "table": self.quote_name(modelo._meta.db_table),
+                "changes": self.sql_alter_column_type % {
+                    "column": nuevo,
+                    "type": tipo,
+                    }
+                }
+                self.execute(sql)

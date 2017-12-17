@@ -52,10 +52,12 @@ class AtributoSerializador(serializers.ModelSerializer):
                         "tipo": "no se puede cambiar de tipo texto a un valor entero o flotante"
                     }
             raise ValidationError(error)
+        else:
+            tipo = datos.get("tipo")
 
         esquema.editar_columna(modelo, obj.nombre, nombre, tipo=tipo)
         obj.nombre = nombre
+        obj.tipo = tipo
         obj.descripcion = datos.get("descripcion")
         obj.save()
-        campo = self.definir_tipo(obj)
         return obj
