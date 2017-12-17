@@ -11,10 +11,31 @@ class Categoria(models.Model):
     def eliminable(self):
         return not self.capas.all().exists()
 
+    def __str__(self):
+        return self.nombre
+
 class Capas(models.Model):
+    PUNTO = 'Point'
+    POLIGONO = 'Polygon'
+    POLIGONO_MULTIPLE = 'MultiPolygon'
+    PUNTO_MULTIPLE = 'MultiPoint'
+    LINEA = 'LineString'
+    LINEA_MULTIPLE = 'MultiLineString'
+    GEOMETRICOS_CHOICES = (
+        (PUNTO, PUNTO),
+        (POLIGONO, POLIGONO),
+        (LINEA, LINEA),
+        (POLIGONO_MULTIPLE, POLIGONO_MULTIPLE),
+        (LINEA_MULTIPLE, LINEA_MULTIPLE)
+        )
+
     nombre = models.CharField(max_length=30)
     categoria = models.ForeignKey(Categoria, related_name="capas",
                                   on_delete=models.CASCADE)
+    tipo = models.CharField(max_length=30, choices=GEOMETRICOS_CHOICES)
+
+    def __str__(self):
+        return self.nombre
 
 class Atributos(models.Model):
     PUNTO = 'Point'
@@ -26,6 +47,8 @@ class Atributos(models.Model):
     ENTERO = 'Int'
     FLOTANTE = 'Float'
     LINEA_MULTIPLE = 'MultiLineString'
+
+    GEOMETRICOS = (PUNTO, POLIGONO, LINEA, POLIGONO_MULTIPLE, LINEA_MULTIPLE, LINEA_MULTIPLE,)
 
     TIPO_CHOICES = (
         (PUNTO, PUNTO),

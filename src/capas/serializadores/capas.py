@@ -1,48 +1,46 @@
 from capas.models import Capas, Atributos
 from rest_framework import serializers
 from .categorias import CategoriaSerializador
-from capas.capa import CapaImporter
+from capas.capa_utils import CapaImporter
+from .atributos import AtributoListarSerializador
 
-
-class AtributoSerializador(serializers.ModelSerializer):
-    class Meta:
-        model = Atributos
-        fields = ("id", "nombre", "tipo","descripcion", )
 
 class CapaListSerializador(serializers.ModelSerializer):
     link = serializers.HyperlinkedIdentityField(view_name='capas-detail', format='html')
     categoria = CategoriaSerializador()
-    #atributos = AtributoSerializador(many=True)
     class Meta:
         model = Capas
         fields = ("id", "nombre", "categoria", "link")
 
 class CapaSerializador(serializers.ModelSerializer):
-    atributos = AtributoSerializador(many=True)
+    atributos = AtributoListarSerializador(many=True)
+    tipo = serializers.ChoiceField(choices=(Atributos.GEOMETRICOS))
     class Meta:
         model = Capas
-        fields = ("id", "nombre","categoria", "atributos")
+        fields = ("id", "nombre", "tipo", "categoria", "atributos")
 
     def create(self, datos):
-        attrs = datos.pop("atributos")
         nombre = datos.pop("nombre").replace('.', '_').replace(" ", "_").lower()
-        obj =  Capas.objects.create(**datos, nombre=nombre)
-        self.registrar_atributos(obj, attrs)
+        obj = Capas.objects.create(categoria=datos.get("categoria"),
+                                   nombre=nombre, tipo=datos.get("tipo"))
+        self.registrar_geom(obj, obj.tipo)
         importer = CapaImporter(None, obj.nombre, obj.categoria_id, verificar_nombre=False)
         importer.desde_tabla(obj)
         return obj
 
-    def registrar_atributos(self, obj, attrs):
-        for i in attrs:
-            i.update({"capa": obj})
-            Atributos.objects.create(**i)
+    def registrar_geom(self, obj, tipo):
+        geom = {
+            "nombre": "geom",
+            "tipo": tipo,
+            "capa": obj,
+            "descripcion": "campo geometrico de la capa"
+        }
+        Atributos.objects.create(**geom)
 
     def update(self, instance, datos):
-        attrs = datos.pop("atributos")
-        instance.atributos.all().delete()
+        tipo = datos.pop("tipo")
         for key, value in datos.items():
             setattr(instance, key, value)
-        self.registrar_atributos(instance, attrs)
         instance.nombre.replace('.', '_').replace(" ", "_").lower()
         instance.save()
         return instance
