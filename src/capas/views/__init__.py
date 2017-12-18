@@ -1,3 +1,3 @@
 from .atributos import AtributosRecursos
-from .capas import CapasRecursos, ImportarRecursos
+from .capas import CapasRecursos
 from .categorias import CategoriasRecursos

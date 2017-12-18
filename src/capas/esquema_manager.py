@@ -11,6 +11,7 @@ class EsquemaManager(BaseDatabaseSchemaEditor):
 
     def agregar_columna(self, modelo, campo):
         definicion, params = self.column_sql(modelo, campo, include_default=True)
+        definicion = definicion.replace("NOT NULL", "")
         sql = self.sql_create_column % {
             "table": self.quote_name(modelo._meta.db_table),
             "column": campo.db_column,

@@ -8,11 +8,13 @@ import json
 
 class CapaImporter():
 
-    def __init__(self, capa, nombre, categoria, verificar_nombre=True):
+    def __init__(self, capa, nombre, categoria, verificar_nombre=True,
+                 verificar_categoria=True):
         self.cursor = connection.cursor()
         if verificar_nombre:
             self.nombre = self.validar_nombre(nombre)
-        self.categoria = self.validar_categoria(categoria)
+        if verificar_categoria:
+            self.categoria = self.validar_categoria(categoria)
         self.capa = capa
 
     def get_tipo(self, tipo):
@@ -110,25 +112,32 @@ class CapaImporter():
         for i in attrs:
             if i.lower() == "id":
                 continue
-            opciones.update({i.lower(): models.CharField(max_length=255)})
+            opciones.update({i.lower(): models.CharField(max_length=255, null=True)})
         opciones.update({"geom": self.get_tipo(self.capa[0].geometry.type)})
         modelo = type(self.nombre, (models.Model,), opciones)
         esquema = BaseDatabaseSchemaEditor(connection)
         esquema.deferred_sql = []
+
+        self.insertar_registros(modelo)
         esquema.create_model(modelo)
+        
+        self.registrar_estructura(attrs)
+
+    def insertar_registros(self, modelo):
         for obj in self.capa:
             datos = {}
+            obj.properties.pop("pk")
             [datos.update({key.lower(): value}) for key, value in obj.properties.items()]
             valor = self.get_valor(obj.geometry.type, obj.geometry.coordinates)
             modelo.objects.create(**datos, geom=valor)
-        self.registrar_estructura(attrs)
-        connection.commit()
+
 
     def registrar_estructura(self, attrs):
         """
         registrar la estructura de la capa a nivel de datos
         """
-        self.cursor.execute("INSERT INTO capas_capas (nombre, categoria_id) values(%s, %s) RETURNING id;", (self.nombre, self.categoria,))
+        tipo = self.capa[0].geometry.type
+        self.cursor.execute("INSERT INTO capas_capas (nombre, categoria_id, tipo) values(%s, %s, %s) RETURNING id;", (self.nombre, self.categoria, tipo,))
         _id = self.cursor.fetchone()[0]
         self.cursor.execute("INSERT INTO capas_atributos (capa_id, nombre, tipo) values(%s, 'geom', %s);", (_id, self.capa[0].geometry.type,))
         for i in attrs:

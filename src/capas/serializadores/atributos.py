@@ -8,11 +8,13 @@ from django.db import transaction
 
 
 class AtributoListarSerializador(serializers.ModelSerializer):
+    link = serializers.HyperlinkedIdentityField(view_name='atributos-detail', format='html')
     class Meta:
         model = Atributos
-        fields = ("id", "nombre", "tipo", "descripcion", )
+        fields = ("id", "nombre", "tipo", "descripcion", "link",)
 
 class AtributoSerializador(serializers.ModelSerializer):
+    link = serializers.HyperlinkedIdentityField(view_name='atributos-detail', format='html')
     tipo = serializers.ChoiceField(choices=(Atributos.TEXTO, Atributos.ENTERO, Atributos.FLOTANTE))
     class Meta:
         model = Atributos

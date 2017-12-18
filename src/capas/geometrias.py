@@ -1,26 +1,29 @@
-from django.contrib.gis.geos import Point, MultiPoint, Polygon, MultiPolygon
+from django.contrib.gis.geos import Point, MultiPoint, Polygon, MultiPolygon, \
+                                    LineString
 
 class Punto(Point):
     def get(value):
-        if len(value) != 1:
-            raise Exception("Valor invalido para Punto. "+str(value))
         return Point(value)
 
 class MultiPunto(MultiPoint):
-    pass
+    def get(value):
+        return MultiPoint(value)
 
 class Linea(MultiPoint):
-    pass
+    def get(value):
+        return LineString(value)
 
 class MultiLinea(MultiPoint):
-    pass
+    def get(value):
+        return LineString(value)
 
 class Raster(MultiPoint):
-    pass
+    def get(value):
+        return LineString(value)
 
 class Poligono(Polygon):
     def get(value):
-        return Polygon(value)
+        return Polygon(value[0])
 
 class MultiPoligono(Polygon):
     def get(value):
