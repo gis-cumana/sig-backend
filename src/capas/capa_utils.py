@@ -129,7 +129,8 @@ class CapaImporter():
             obj.properties.pop("pk")
             [datos.update({key.lower(): value}) for key, value in obj.properties.items()]
             valor = self.get_valor(obj.geometry.type, obj.geometry.coordinates)
-            modelo.objects.create(**datos, geom=valor)
+            datos.update({"geom": valor})
+            modelo.objects.create(**datos)
 
 
     def registrar_estructura(self, attrs):

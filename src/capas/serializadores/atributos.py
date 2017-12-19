@@ -31,7 +31,8 @@ class AtributoSerializador(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, datos):
         nombre = datos.pop("nombre").replace('.', '_').replace(" ", "_").lower()
-        obj = Atributos.objects.create(**datos, nombre=nombre)
+        datos.update({"nombre": nombre})
+        obj = Atributos.objects.create(**datos)
 
         modelo = crear_modelo(obj.capa.nombre)
 
