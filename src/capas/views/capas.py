@@ -48,6 +48,7 @@ class CapasRecursos(viewsets.ModelViewSet):
             modelo = crear_modelo(nombre)
             datos = request.data
             geo = pygeoj.load(data=datos)
+            
             importer = CapaImporter(geo, None, None, verificar_nombre=False,
                                     verificar_categoria=False)
             importer.insertar_registros(modelo)

@@ -10,7 +10,7 @@ class CapaListSerializador(serializers.ModelSerializer):
     categoria = CategoriaSerializador()
     class Meta:
         model = Capas
-        fields = ("id", "nombre", "categoria", "link")
+        fields = ("id", "nombre", "tipo", "categoria", "link")
 
 class CapaSerializador(serializers.ModelSerializer):
     atributos = AtributoListarSerializador(many=True)
