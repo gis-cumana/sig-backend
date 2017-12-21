@@ -47,6 +47,8 @@ class CapasRecursos(viewsets.ModelViewSet):
         def post(request, nombre):
             modelo = crear_modelo(nombre)
             datos = request.data
+            import pdb
+            pdb.set_trace()
             geo = pygeoj.load(data=datos)
             importer = CapaImporter(geo, None, None, verificar_nombre=False,
                                     verificar_categoria=False)
@@ -63,14 +65,9 @@ class CapasRecursos(viewsets.ModelViewSet):
         elif request.method == "POST":
             return post(request, nombre)
 
-
-class ImportarRecursos(viewsets.ModelViewSet):
-
-    parser_classes = (MultiPartParser, FormParser,)
-    queryset = Capas.objects.all()
-    serializer_class = CapaSerializador
-
-    def create(self, request, *args, **kwargs):
+    @transaction.atomic
+    @list_route(methods=['post'], url_path=r'importar')
+    def importar(self, request, *args, **kwargs):
         def validar(_file):
             if _file is None:
                 raise ValidationError({"file":"es necesario la capa"})
