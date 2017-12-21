@@ -48,13 +48,11 @@ class CapasRecursos(viewsets.ModelViewSet):
             modelo = crear_modelo(nombre)
             datos = request.data
             geo = pygeoj.load(data=datos)
-            
             importer = CapaImporter(geo, None, None, verificar_nombre=False,
                                     verificar_categoria=False)
             importer.insertar_registros(modelo)
 
             queryset = modelo.objects.all()
-            
             data = serialize('geojson', queryset,
                              geometry_field='geom')
             data = json.loads(data)
@@ -64,10 +62,15 @@ class CapasRecursos(viewsets.ModelViewSet):
             return get(request, nombre)
         elif request.method == "POST":
             return post(request, nombre)
-    
-    """@transaction.atomic
-    @list_route(methods=['post'], url_path=r'importar')
-    def importar_capa(self, request):
+
+
+class ImportarRecursos(viewsets.ModelViewSet):
+
+    parser_classes = (MultiPartParser, FormParser,)
+    queryset = Capas.objects.all()
+    serializer_class = CapaSerializador
+
+    def create(self, request, *args, **kwargs):
         def validar(_file):
             if _file is None:
                 raise ValidationError({"file":"es necesario la capa"})
@@ -80,33 +83,6 @@ class CapasRecursos(viewsets.ModelViewSet):
         if categoria is None:
             categoria = 1
         geo = pygeoj.load(_file.fileno())
-        importer = CapaImporter(geo, nombre, categoria)
-        importer.importar_tabla()
-        return Response()
-    """
-
-class ImportarRecursos(viewsets.ModelViewSet):
-    
-    #parser_classes = ( MultiPartParser, FormParser)
-    queryset = Capas.objects.all()
-    serializer_class = CapaSerializador
-    
-    def create(self, request,  *args, **kwargs):
-        def validar(_file):
-            if _file is None:
-                raise ValidationError({"filename":"es necesario la capa"})
-        _file = self.request.data.get('filename')
-        #validar(_file)
-        nombre = self.request.data.get("nombre")
-        categoria = self.request.data.get("categoria")
-        if nombre is None:
-            nombre = _file.name.replace(".geojson", "")
-        if categoria is None:
-            categoria = 1
-        from gis.settings import BASE_DIR
-        archivo = BASE_DIR+"/capas/estados.geojson"
-        geo = pygeoj.load(filepath=archivo)
-        nombre = "estados"
         importer = CapaImporter(geo, nombre, categoria)
         importer.importar_tabla()
         return Response()
