@@ -6,11 +6,12 @@ from .atributos import AtributoListarSerializador
 
 
 class CapaListSerializador(serializers.ModelSerializer):
+    atributos = AtributoListarSerializador(many=True)
     link = serializers.HyperlinkedIdentityField(view_name='capas-detail', format='html')
     categoria = CategoriaSerializador()
     class Meta:
         model = Capas
-        fields = ("id", "nombre", "tipo", "categoria", "link")
+        fields = ("id", "nombre", "atributos", "tipo", "categoria", "link")
 
 class CapaSerializador(serializers.ModelSerializer):
     atributos = AtributoListarSerializador(many=True)

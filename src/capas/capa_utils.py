@@ -92,7 +92,8 @@ class CapaImporter():
         """
         tipo = self.capa[0].geometry.type
         for item in self.capa:
-            if item.geometry.type != tipo:
+            if item.geometry.type.replace("Multi", "") != tipo.replace("Multi", ""):
+                print(item.geometry.type, tipo.replace("Multi", ""))
                 raise ValidationError("la capa tiene multiples tipos de geometria")
             tipo = item.geometry.type
         if Capas.objects.filter(nombre=self.nombre.lower()).count() > 0:
@@ -117,16 +118,15 @@ class CapaImporter():
         modelo = type(self.nombre, (models.Model,), opciones)
         esquema = BaseDatabaseSchemaEditor(connection)
         esquema.deferred_sql = []
-
-        self.insertar_registros(modelo)
         esquema.create_model(modelo)
-        
+        self.insertar_registros(modelo)
         self.registrar_estructura(attrs)
 
     def insertar_registros(self, modelo):
         for obj in self.capa:
             datos = {}
-            obj.properties.pop("pk")
+            if obj.properties.get("pk") is not None:
+                obj.properties.pop("pk")
             [datos.update({key.lower(): value}) for key, value in obj.properties.items()]
             valor = self.get_valor(obj.geometry.type, obj.geometry.coordinates)
             datos.update({"geom": valor})

@@ -6,7 +6,7 @@ from capas.serializadores import CapaSerializador, CapaListSerializador
 import pygeoj
 import json
 from django.core.serializers import serialize
-from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
 from capas.capa_utils import CapaImporter
 from django.db import connection, transaction
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
@@ -65,7 +65,7 @@ class CapasRecursos(viewsets.ModelViewSet):
         elif request.method == "POST":
             return post(request, nombre)
     
-    @transaction.atomic
+    """@transaction.atomic
     @list_route(methods=['post'], url_path=r'importar')
     def importar_capa(self, request):
         def validar(_file):
@@ -75,7 +75,38 @@ class CapasRecursos(viewsets.ModelViewSet):
         validar(_file)
         nombre = self.request.data.get("nombre")
         categoria = self.request.data.get("categoria")
+        if nombre is None:
+            nombre = _file.name.replace(".geojson", "")
+        if categoria is None:
+            categoria = 1
         geo = pygeoj.load(_file.fileno())
+        importer = CapaImporter(geo, nombre, categoria)
+        importer.importar_tabla()
+        return Response()
+    """
+
+class ImportarRecursos(viewsets.ModelViewSet):
+    
+    #parser_classes = ( MultiPartParser, FormParser)
+    queryset = Capas.objects.all()
+    serializer_class = CapaSerializador
+    
+    def create(self, request,  *args, **kwargs):
+        def validar(_file):
+            if _file is None:
+                raise ValidationError({"filename":"es necesario la capa"})
+        _file = self.request.data.get('filename')
+        #validar(_file)
+        nombre = self.request.data.get("nombre")
+        categoria = self.request.data.get("categoria")
+        if nombre is None:
+            nombre = _file.name.replace(".geojson", "")
+        if categoria is None:
+            categoria = 1
+        from gis.settings import BASE_DIR
+        archivo = BASE_DIR+"/capas/estados.geojson"
+        geo = pygeoj.load(filepath=archivo)
+        nombre = "estados"
         importer = CapaImporter(geo, nombre, categoria)
         importer.importar_tabla()
         return Response()
