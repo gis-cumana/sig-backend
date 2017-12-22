@@ -67,6 +67,14 @@ class Atributos(models.Model):
     tipo = models.CharField(max_length=30, choices=TIPO_CHOICES)
     descripcion = models.CharField(max_length=80, null=True)
 
+    @property
+    def eliminable(self):
+        return self.nombre != "geom"
+
+    @property
+    def modificable(self):
+        return self.nombre != "geom"
+
 def crear_modelo(nombre):
     opciones = {
         "__module__": "capas"

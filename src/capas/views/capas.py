@@ -34,36 +34,49 @@ class CapasRecursos(viewsets.ModelViewSet):
         return CapaSerializador
 
     @transaction.atomic
-    @list_route(methods=['get', 'post'], url_path=r'nombre/(?P<nombre>[^/]+)')
+    @list_route(methods=['get', 'put'], url_path=r'nombre/(?P<nombre>[^/]+)')
     def capas_geograficas(self, request, nombre):
-        def get(request, nombre):
-            modelo = crear_modelo(nombre)
+        def get(request, modelo):
             queryset = modelo.objects.all()
             data = serialize('geojson', queryset,
                              geometry_field='geom')
             data = json.loads(data)
-            return Response(data, content_type="application/json")
+            return Response(data)
 
-        def post(request, nombre):
-            modelo = crear_modelo(nombre)
-            datos = request.data
-            import pdb
-            pdb.set_trace()
-            geo = pygeoj.load(data=datos)
-            importer = CapaImporter(geo, None, None, verificar_nombre=False,
-                                    verificar_categoria=False)
-            importer.insertar_registros(modelo)
+        def update(request, modelo):
+            datos = request.data.get("data").replace("'", "\"")
+            try:
+                datos = json.loads(datos)
+                geo = pygeoj.load(data=datos)
+                data = []
+                for i in geo._data["features"]:
+                    nuevo = i["properties"].get("nuevo")
+                    modificar = i["properties"].get("modificar")
+                    eliminar = i["properties"].get("eliminar")
+                    if nuevo is not None or modificar is not None or eliminar is not None:
+                        data.append(i)
+                geo._data["features"] = data
+                importer = CapaImporter(geo, None, None, verificar_nombre=False,
+                                        verificar_categoria=False)
+                importer.alterar_registros(modelo)
 
-            queryset = modelo.objects.all()
-            data = serialize('geojson', queryset,
-                             geometry_field='geom')
-            data = json.loads(data)
-            return Response(data, status=201)
+                queryset = modelo.objects.all()
+                data = serialize('geojson', queryset,
+                                 geometry_field='geom')
+                data = json.loads(data)
+                return Response(data)
+            except json.decoder.JSONDecodeError as e:
+                raise ValidationError({"mensaje": "json invalido, "+e})
+            except ValueError:
+                raise ValidationError({"mensaje": "el geojson es invalido"})
+
+
+        modelo = crear_modelo(nombre)
 
         if request.method == "GET":
-            return get(request, nombre)
-        elif request.method == "POST":
-            return post(request, nombre)
+            return get(request, modelo)
+        elif request.method == "PUT":
+            return update(request, modelo)
 
     @transaction.atomic
     @list_route(methods=['post'], url_path=r'importar')

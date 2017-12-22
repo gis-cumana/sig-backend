@@ -16,6 +16,7 @@ class CapaImporter():
         if verificar_categoria:
             self.categoria = self.validar_categoria(categoria)
         self.capa = capa
+        self.status = False
 
     def get_tipo(self, tipo):
         """
@@ -122,16 +123,43 @@ class CapaImporter():
         self.insertar_registros(modelo)
         self.registrar_estructura(attrs)
 
-    def insertar_registros(self, modelo):
+    def alterar_registros(self, modelo):
         for obj in self.capa:
-            datos = {}
-            if obj.properties.get("pk") is not None:
-                obj.properties.pop("pk")
-            [datos.update({key.lower(): value}) for key, value in obj.properties.items()]
-            valor = self.get_valor(obj.geometry.type, obj.geometry.coordinates)
-            datos.update({"geom": valor})
-            modelo.objects.create(**datos)
+            if obj.properties.get("modificar"):
+                self.modificar_registros(modelo, obj)
+            if obj.properties.get("nuevo"):
+                self.insertar_registros(modelo, obj)
+            if obj.properties.get("eliminar"):
+                self.eliminar_registros(modelo, obj)
 
+    def insertar_registros(self, modelo, obj):
+        datos = {}
+        obj.properties.pop("nuevo")
+        if obj.properties.get("pk") is not None:
+            obj.properties.pop("pk")
+        [datos.update({key.lower(): value}) for key, value in obj.properties.items()]
+        valor = self.get_valor(obj.geometry.type, obj.geometry.coordinates)
+        datos.update({"geom": valor})
+        modelo.objects.create(**datos)
+
+    def modificar_registros(self, modelo, obj):
+        datos = {}
+        obj.properties.pop("modificar")
+        pk = obj.properties.get("pk")
+        objeto = modelo.objects.filter(id=pk).first()
+        if objeto is None:
+            raise ValidationError({"mensaje": "no existe un registro con ID " + str(pk)})
+        [datos.update({key.lower(): value}) for key, value in obj.properties.items()]
+        valor = self.get_valor(obj.geometry.type, obj.geometry.coordinates)
+        datos.update({"geom": valor})
+        instancia = modelo(**datos)
+        instancia.id = pk
+        instancia.save()
+
+    def eliminar_registros(self, modelo, obj):
+        obj.properties.pop("eliminar")
+        pk = obj.properties.get("pk")
+        modelo.objects.filter(id=pk).delete()
 
     def registrar_estructura(self, attrs):
         """

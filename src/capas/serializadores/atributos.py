@@ -11,7 +11,7 @@ class AtributoListarSerializador(serializers.ModelSerializer):
     link = serializers.HyperlinkedIdentityField(view_name='atributos-detail', format='html')
     class Meta:
         model = Atributos
-        fields = ("id", "nombre", "tipo", "descripcion", "link",)
+        fields = ("id", "nombre", "tipo", "descripcion","eliminable", "modificable", "link",)
 
 class AtributoSerializador(serializers.ModelSerializer):
     link = serializers.HyperlinkedIdentityField(view_name='atributos-detail', format='html')
