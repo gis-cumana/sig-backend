@@ -12,4 +12,5 @@ router.register("atributos", AtributosRecursos)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    url(r'^docs/', include('rest_framework_docs.urls')),
 ]

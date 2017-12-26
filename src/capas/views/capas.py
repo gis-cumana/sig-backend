@@ -19,6 +19,7 @@ class CapasRecursos(viewsets.ModelViewSet):
     serializer_class = CapaSerializador
 
     def destroy(self, request, *args, **kwargs):
+ 
         objeto = self.get_object()
         modelo = crear_modelo(objeto.nombre)
 

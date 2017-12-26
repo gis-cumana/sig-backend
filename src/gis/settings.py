@@ -25,7 +25,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'django.contrib.gis',
-    'capas.apps.CapasConfig'
+    'capas.apps.CapasConfig',
+    'rest_framework_docs',
 ]
 
 MIDDLEWARE = [
