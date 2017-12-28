@@ -55,3 +55,11 @@ class ParametroListSerializador(serializers.ModelSerializer):
         model = Parametro
         fields = ("id","nombre","tipo", "link", "eliminable", "categoria")
 
+class ParametroCategoriaSerializador(serializers.ModelSerializer):
+    from .categorias import CategoriaSerializador
+    link = serializers.HyperlinkedIdentityField(view_name='parametro-detail', format='html')
+    
+    class Meta:
+        model = Parametro
+        fields = ("id","nombre","tipo", "link", "eliminable",)
+

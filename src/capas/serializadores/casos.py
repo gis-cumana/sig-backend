@@ -1,20 +1,21 @@
-from capas.models import Suceso
+from capas.models import Casos
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from datetime import datetime, date, time
 
 
-class SucesoSerializador(serializers.ModelSerializer):
+class CasosSerializador(serializers.ModelSerializer):
     
     class Meta:
-        model = Suceso
-        fields = ("id", "descripcion", "fecha", "hora", "tipo", "visible", "geom", "tipo", "usuario")
+        model = Casos
+        fields = ("__all__")
+        read_only_fields = ("visible", )
     
     
     def create(self, datos):
         datos = self.validar_fecha_hora(**datos)
-        suceso = Suceso.objects.create(**datos)
-        return suceso
+        Casos = Casos.objects.create(**datos)
+        return Casos
 
 
     
@@ -47,20 +48,20 @@ class SucesoSerializador(serializers.ModelSerializer):
         datos.update({'hora_creado':hora})
 
         if datos.get('fecha') > fecha:
-            raise ValidationError({'Error': 'La fecha del suceso debe ser menor a %s' % (fecha)})
+            raise ValidationError({'Error': 'La fecha del Casos debe ser menor a %s' % (fecha)})
         elif datos.get('fecha') == fecha and datos.get('hora') > hora:
-                raise ValidationError({'Error': 'La fecha y hora del suceso deben ser menor a la fecha y hora actual: (%s - %s)' % (fecha, hora)})
+                raise ValidationError({'Error': 'La fecha y hora del Casos deben ser menor a la fecha y hora actual: (%s - %s)' % (fecha, hora)})
         return datos       
             
                     
 
-class SucesoListSerializador(serializers.ModelSerializer):
+class CasosListSerializador(serializers.ModelSerializer):
     from .usuarios import UsuarioSerializador
-    link = serializers.HyperlinkedIdentityField(view_name='suceso-detail', format='html')
+    link = serializers.HyperlinkedIdentityField(view_name='Casos-detail', format='html')
     usuario = UsuarioSerializador()
     
     class Meta:
-        model = Suceso
-        fields = ("id", "descripcion", "fecha", "hora", "tipo", "fecha_creado", "hora_creado", 
-            "visible", "geom", "tipo", "link", "usuario")
+        model = Casos
+        fields = ("id", "descripcion", "fecha", "hora",  "fecha_creado", "hora_creado", 
+            "visible", "geom",  "link", "usuario")
 

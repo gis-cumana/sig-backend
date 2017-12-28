@@ -36,7 +36,7 @@ class GETSingleCategoriasTest(APITestCase):
     
     def test_get_invalid_single_categorias(self):
         response = self.client.get('/categorias/4')
-        self.assertEqual(response.status_code,status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class CreateNewCategoriasTest(APITestCase):

@@ -2,6 +2,8 @@ from django.contrib.gis.db import models
 from django.contrib.gis.geos.point import Point
 from django.contrib.gis.geos.collections import MultiPolygon, MultiLineString
 from rest_framework.exceptions import ValidationError
+from django.contrib.auth.models import User
+
 
 class Categoria(models.Model):
     nombre =  models.CharField(max_length=30, unique=True)
@@ -140,27 +142,16 @@ class Parametro(models.Model):
         return self.nombre
 
 
-class Suceso(models.Model):
-    SISMO = 'Sismo'
-    TERREMOTO = 'Terremoto'
-    LICUACION = 'Licuacion'
-    DESLAVE = 'Deslave'
-
-
-    EVENTOS_CHOICES = (
-        (SISMO, SISMO),
-        (TERREMOTO, TERREMOTO),
-        (LICUACION, LICUACION),
-        (DESLAVE, DESLAVE)
-    )
-
+class Casos(models.Model):
    
-    descripcion= models.CharField(max_length=255)    
+    descripcion = models.CharField(max_length=255)    
     fecha = models.DateField(blank=True)
     hora = models.TimeField(blank=True)
     fecha_creado = models.DateField(blank=True)
     hora_creado =  models.TimeField(blank=True)
     visible = models.BooleanField()
     geom = models.PointField(null=True)
-    tipo = models.CharField(max_length=30, choices=EVENTOS_CHOICES)
-    usuario = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='user')    
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Casos')
+    capa = models.ForeignKey(Capas, null=True, on_delete=models.CASCADE, related_name='Casos')
+    registro = models.IntegerField(null=True)
+    

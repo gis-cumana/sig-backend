@@ -18,10 +18,10 @@ class CategoriaSerializador(serializers.ModelSerializer):
 
 class CategoriaListSerializador(serializers.ModelSerializer):
     from .capas import CapaListSerializador
-    from .parametros import ParametroListSerializador
+    from .parametros import ParametroCategoriaSerializador
     link = serializers.HyperlinkedIdentityField(view_name='categoria-detail', format='html')
     capas = CapaListSerializador(many=True)
-    parametros = ParametroListSerializador(many=True)
+    parametros = ParametroCategoriaSerializador(many=True)
     class Meta:
         model = Categoria
         fields = ("id","nombre","link", "descripcion", "eliminable", "capas", "parametros")
