@@ -107,3 +107,60 @@ def buscar_capa_y_atributos(nombre):
             "capa": "no existe"
         }
         raise ValidationError(error)
+
+class Parametro(models.Model):
+    TEXTO = 'Text'
+    ENTERO = 'Int'
+    FLOTANTE = 'Float'
+    IMAGEN = 'Image'
+    EMAIL = 'Email'
+    DATE = 'Date'
+    DATETIME = 'DateTime'
+
+    TIPO_CHOICES = (
+        (TEXTO, TEXTO),
+        (ENTERO, ENTERO),
+        (FLOTANTE, FLOTANTE),
+        (IMAGEN, IMAGEN),
+        (EMAIL, EMAIL),
+        (DATE, DATE),
+        (DATETIME, DATETIME)
+    )
+
+    nombre = models.CharField(max_length=30, unique=True)
+    tipo = models.CharField(max_length=30, choices=TIPO_CHOICES)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE,
+                             related_name='parametros')    
+    @property
+    def eliminable(self):
+        return not self.categoria.capas.all().exists()
+    
+    
+    def __str__(self):
+        return self.nombre
+
+
+class Suceso(models.Model):
+    SISMO = 'Sismo'
+    TERREMOTO = 'Terremoto'
+    LICUACION = 'Licuacion'
+    DESLAVE = 'Deslave'
+
+
+    EVENTOS_CHOICES = (
+        (SISMO, SISMO),
+        (TERREMOTO, TERREMOTO),
+        (LICUACION, LICUACION),
+        (DESLAVE, DESLAVE)
+    )
+
+   
+    descripcion= models.CharField(max_length=255)    
+    fecha = models.DateField(blank=True)
+    hora = models.TimeField(blank=True)
+    fecha_creado = models.DateField(blank=True)
+    hora_creado =  models.TimeField(blank=True)
+    visible = models.BooleanField()
+    geom = models.PointField(null=True)
+    tipo = models.CharField(max_length=30, choices=EVENTOS_CHOICES)
+    usuario = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='user')    
