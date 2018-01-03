@@ -4,3 +4,4 @@ from .categorias import CategoriasRecursos
 from .parametros import ParametrosRecursos
 from .casos import CasosRecursos
 from .usuarios import UsuariosRecursos
+from .tipologia import TipologiaRecursos

@@ -33,5 +33,5 @@ class UsuarioListSerializador(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ("id", "username", "first_name", "last_name", "email", "is_active", "link")
+        fields = ("id", "username", "first_name", "last_name", "email", "is_active", "link", "Casos")
 

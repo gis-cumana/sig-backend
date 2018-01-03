@@ -154,4 +154,13 @@ class Casos(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Casos')
     capa = models.ForeignKey(Capas, null=True, on_delete=models.CASCADE, related_name='Casos')
     registro = models.IntegerField(null=True)
-    
+
+class TipologiaConstructiva(models.Model):
+   
+    descripcion = models.CharField(max_length=255)    
+    nombre_centro = models.CharField(max_length=255, unique=True)
+    estandar = models.CharField(max_length=255)    
+    anyo = models.CharField(max_length=4)
+
+    def __str__(self):
+        return self.nombre

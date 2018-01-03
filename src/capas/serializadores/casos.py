@@ -2,20 +2,24 @@ from capas.models import Casos
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from datetime import datetime, date, time
-
+from .usuarios import UsuarioSerializador
 
 class CasosSerializador(serializers.ModelSerializer):
     
     class Meta:
         model = Casos
         fields = ("__all__")
-        read_only_fields = ("visible", )
+        read_only_fields = ("visible", "fecha_creado","hora_creado","geom")
     
     
     def create(self, datos):
+        #import pdb
+        #pdb.set_trace()
+        datos.update({'visible':False})
+        """ Los geom son null para probar funcionalidades """
         datos = self.validar_fecha_hora(**datos)
-        Casos = Casos.objects.create(**datos)
-        return Casos
+        objeto = Casos.objects.create(**datos)
+        return objeto
 
 
     
@@ -56,8 +60,8 @@ class CasosSerializador(serializers.ModelSerializer):
                     
 
 class CasosListSerializador(serializers.ModelSerializer):
-    from .usuarios import UsuarioSerializador
-    link = serializers.HyperlinkedIdentityField(view_name='Casos-detail', format='html')
+    
+    link = serializers.HyperlinkedIdentityField(view_name='casos-detail', format='html')
     usuario = UsuarioSerializador()
     
     class Meta:

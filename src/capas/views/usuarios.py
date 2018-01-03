@@ -14,9 +14,9 @@ class UsuariosRecursos(viewsets.ModelViewSet):
    
     
     def destroy(self, request, *args, **kwargs):
-        objecto = self.get_object()
-        objecto.is_active = False
-        objecto.save()
+        objeto = self.get_object()
+        objeto.is_active = False
+        objeto.save()
         #self.perform_destroy(objecto)
         return Response(status=204)
 

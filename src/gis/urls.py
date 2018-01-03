@@ -6,13 +6,15 @@ from capas.views import CapasRecursos, CategoriasRecursos,\
                         AtributosRecursos, ParametrosRecursos
 from capas.views import CasosRecursos
 from capas.views import UsuariosRecursos
+from capas.views import TipologiaRecursos
 
 router = RaizRouter(trailing_slash=False)
 router.register("capas", CapasRecursos)
 router.register("categorias", CategoriasRecursos)
 router.register("atributos", AtributosRecursos)
 router.register("parametros", ParametrosRecursos)
-router.register("sucesos", CasosRecursos)
+router.register("casos", CasosRecursos)
+router.register("tipologias", TipologiaRecursos)
 router.register("usuarios", UsuariosRecursos)
 
 urlpatterns = [
