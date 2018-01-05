@@ -7,6 +7,8 @@ from capas.views import CapasRecursos, CategoriasRecursos,\
 from capas.views import CasosRecursos
 from capas.views import UsuariosRecursos
 from capas.views import TipologiaRecursos
+from django.conf import settings
+from django.conf.urls.static import static
 
 router = RaizRouter(trailing_slash=False)
 router.register("capas", CapasRecursos)
@@ -20,3 +22,5 @@ router.register("usuarios", UsuariosRecursos)
 urlpatterns = [
     url(r'^', include(router.urls)),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

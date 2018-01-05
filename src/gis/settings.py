@@ -3,6 +3,9 @@ from os.path import dirname, join, exists
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
+MEDIA_URL = '/media/'  
+
 SECRET_KEY = 'e*2n!dvk%g5_h_5x)=18l052_!4utghy6+$eg*z7*z9c9x-)c)'
 
 DEBUG = True

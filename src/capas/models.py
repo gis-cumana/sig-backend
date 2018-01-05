@@ -149,11 +149,12 @@ class Casos(models.Model):
     hora = models.TimeField(blank=True)
     fecha_creado = models.DateField(blank=True)
     hora_creado =  models.TimeField(blank=True)
-    visible = models.BooleanField()
-    geom = models.PointField(null=True)
+    visible = models.BooleanField(default=False)
+    geom = models.PointField()
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Casos')
     capa = models.ForeignKey(Capas, null=True, on_delete=models.CASCADE, related_name='Casos')
     registro = models.IntegerField(null=True)
+    imagen = models.ImageField(upload_to = 'fotos', null=True)
 
 class TipologiaConstructiva(models.Model):
    
