@@ -2,9 +2,10 @@ from capas.models import Categoria
 from rest_framework import serializers
 
 class CategoriaSerializador(serializers.ModelSerializer):
+    link = serializers.HyperlinkedIdentityField(view_name='categoria-detail', format='html')
     class Meta:
         model = Categoria
-        fields = ("id","nombre","descripcion","eliminable")
+        fields = ("id","nombre","descripcion","eliminable", "link")
 
     def create(self, datos):
         categoria = Categoria.objects.create(**datos)
@@ -17,10 +18,10 @@ class CategoriaSerializador(serializers.ModelSerializer):
         return instance
 
 class CategoriaListSerializador(serializers.ModelSerializer):
-    from .capas import CapaListSerializador
+    from .capas import CapaCategoriaSerializador
     from .parametros import ParametroCategoriaSerializador
     link = serializers.HyperlinkedIdentityField(view_name='categoria-detail', format='html')
-    capas = CapaListSerializador(many=True)
+    capas = CapaCategoriaSerializador(many=True)
     parametros = ParametroCategoriaSerializador(many=True)
     class Meta:
         model = Categoria
