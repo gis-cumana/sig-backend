@@ -59,6 +59,7 @@ class UpdateSingleTipologiaTest(APITestCase):
         self.valid_payload = {'descripcion':'tipo 1.1', 'nombre_centro':'principal', 'estandar':'3.0', 'anyo':'2015'}
         self.invalid_payload ={'descripcion':'', 'nombre_centro': '', 'estandar':'', 'anyo':''}
     
+    
     def test_valid_update_tipologia(self):
         response = self.client.put('/tipologias/1', self.valid_payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)           
@@ -77,8 +78,8 @@ class DeleteSingleTipologiaTest(APITestCase):
         TipologiaConstructiva.objects.create(id=2, descripcion='tipo 2', nombre_centro='secundario', estandar='2.0', anyo='2010')
         
     def test_valid_delete_tipologia(self):
-        response = self.client.delete('/tipologias/2')
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)           
+        response = self.client.delete('/tipologias/1')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)           
 
     
     def test_invalid_delete_tipologia(self):

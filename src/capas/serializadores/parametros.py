@@ -9,7 +9,7 @@ class ParametroSerializador(serializers.ModelSerializer):
     
     
     def create(self, datos):
-        nombre= datos.get('nombre').lower()
+        nombre = datos.get('nombre').lower().replace('.', '_').replace(" ", "_")
         datos.update({'nombre': nombre})
         parametro = Parametro.objects.create(**datos)
         return parametro
@@ -17,7 +17,7 @@ class ParametroSerializador(serializers.ModelSerializer):
     def update(self, instance, datos):
         
         categoria = datos.pop('categoria')
-        nombre= datos.get('nombre').lower()
+        nombre = datos.get('nombre').lower().replace('.', '_').replace(" ", "_")
         datos.update({'nombre': nombre})
         newtipo = datos.get('tipo')
         

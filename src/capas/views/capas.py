@@ -6,7 +6,6 @@ from capas.serializadores import CapaSerializador, CapaListSerializador
 import pygeoj
 import json
 from django.core.serializers import serialize
-from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
 from capas.capa_utils import CapaImporter
 from django.db import connection, transaction
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
@@ -29,7 +28,7 @@ class CapasRecursos(viewsets.ModelViewSet):
 
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action in ['list', 'retrieve']:
             return CapaListSerializador
         return CapaSerializador
 
@@ -81,18 +80,18 @@ class CapasRecursos(viewsets.ModelViewSet):
     @transaction.atomic
     @list_route(methods=['post'], url_path=r'importar')
     def importar(self, request, *args, **kwargs):
-        def validar(_file):
-            if _file is None:
-                raise ValidationError({"file":"es necesario la capa"})
-        _file = self.request.data.get('file')
-        validar(_file)
+        def validar(capa):
+            if capa is None:
+                raise ValidationError({"data":"es necesario la capa"})
+        capa = self.request.data.get('data')
+        validar(capa)
         nombre = self.request.data.get("nombre")
         categoria = self.request.data.get("categoria")
         if nombre is None:
-            nombre = _file.name.replace(".geojson", "")
+           raise ValidationError({"nombre": "es requerido"})
         if categoria is None:
             categoria = 1
-        geo = pygeoj.load(_file.fileno())
+        geo = pygeoj.load(data=capa)
         importer = CapaImporter(geo, nombre, categoria)
         importer.importar_tabla()
         return Response()

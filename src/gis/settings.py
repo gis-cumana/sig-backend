@@ -4,6 +4,7 @@ from os.path import dirname, join, exists
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
+
 MEDIA_URL = '/media/'  
 
 SECRET_KEY = 'e*2n!dvk%g5_h_5x)=18l052_!4utghy6+$eg*z7*z9c9x-)c)'
@@ -31,7 +32,7 @@ INSTALLED_APPS = [
     'capas.apps.CapasConfig'
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE = [  
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -79,6 +80,16 @@ DATABASES = {
             'PORT': '5432',                      # Set to empty string for default.
         }
     }
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+     'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    )
+}
 
 
 AUTH_PASSWORD_VALIDATORS = [

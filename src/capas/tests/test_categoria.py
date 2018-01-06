@@ -43,15 +43,8 @@ class CreateNewCategoriasTest(APITestCase):
     """ Test module for create new Categorias """
 
     def setUp(self):
-        self.valid_payload ={
-            'nombre' : 'territorios',
-            'descripcion' : 'todos los terrenos'
-        }        
-
-        self.invalid_payload = {
-            'nombre' : '',
-            'descripcion' : 'todas las edificaciones'
-        }
+        self.valid_payload = {'nombre' : 'territorios', 'descripcion' : 'todos los terrenos'}        
+        self.invalid_payload = {'nombre' : '', 'descripcion' : 'todas las edificaciones' }
 
     def test_create_valid_categoria(self):
         response = self.client.post("/categorias", self.valid_payload, format='json')
@@ -78,7 +71,7 @@ class UpdateSingleCategoriasTest(APITestCase):
     def test_valid_update_categoria(self):
         response = self.client.put('/categorias/2', self.valid_payload, format='json')
         self.assertEqual(response.status_code, 200)           
-        
+
     def test_invalid_update_categoria(self):
         response = self.client.put('/categorias/2', self.invalid_payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -90,11 +83,11 @@ class DeleteSingleCategoriasTest(APITestCase):
         self.territorios = Categoria.objects.create(id=1, nombre='territorios', descripcion='comprende sectores, parroquias')
         self.eventos = Categoria.objects.create(id=2, nombre='eventos', descripcion='comprende eventos sismos,licuaciones')
         self.edificacion = Categoria.objects.create(id=3, nombre='edificiacion', descripcion='comprende escuelas, universidades')
-        
+
     def test_valid_delete_categoria(self):
         response = self.client.delete('/categorias/2')
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)           
-    
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
     def test_invalid_delete_categoria(self):
         response = self.client.delete('/categorias/4')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

@@ -49,6 +49,10 @@ class Atributos(models.Model):
     ENTERO = 'Int'
     FLOTANTE = 'Float'
     LINEA_MULTIPLE = 'MultiLineString'
+    IMAGEN = 'Image'
+    EMAIL = 'Email'
+    DATE = 'Date'
+    DATETIME = 'DateTime'
 
     GEOMETRICOS = (PUNTO, POLIGONO, LINEA, POLIGONO_MULTIPLE, LINEA_MULTIPLE, LINEA_MULTIPLE,)
 
@@ -60,7 +64,11 @@ class Atributos(models.Model):
         (ENTERO, ENTERO),
         (FLOTANTE, FLOTANTE),
         (POLIGONO_MULTIPLE, POLIGONO_MULTIPLE),
-        (LINEA_MULTIPLE, LINEA_MULTIPLE)
+        (LINEA_MULTIPLE, LINEA_MULTIPLE),
+        (IMAGEN, IMAGEN),
+        (EMAIL, EMAIL),
+        (DATE, DATE),
+        (DATETIME, DATETIME),
     )
 
     capa = models.ForeignKey(Capas, on_delete=models.CASCADE,
@@ -71,11 +79,16 @@ class Atributos(models.Model):
 
     @property
     def eliminable(self):
-        return self.nombre != "geom"
+        if self.nombre != "geom":
+            return not self.capa.categoria.parametros.filter(nombre=self.nombre).exists()
+        return False
+
 
     @property
     def modificable(self):
-        return self.nombre != "geom"
+        if self.nombre != "geom":
+            return not self.capa.categoria.parametros.filter(nombre=self.nombre).exists()
+        return False
 
 def crear_modelo(nombre):
     opciones = {
@@ -132,7 +145,7 @@ class Parametro(models.Model):
     nombre = models.CharField(max_length=30, unique=True)
     tipo = models.CharField(max_length=30, choices=TIPO_CHOICES)
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE,
-                             related_name='parametros')    
+                             related_name='parametros')
     @property
     def eliminable(self):
         return not self.categoria.capas.all().exists()
@@ -154,7 +167,10 @@ class Casos(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Casos')
     capa = models.ForeignKey(Capas, null=True, on_delete=models.CASCADE, related_name='Casos')
     registro = models.IntegerField(null=True)
-    imagen = models.ImageField(upload_to = 'fotos', null=True)
+
+class Imagen(models.Model):
+    caso = models.ForeignKey(Casos, on_delete=models.CASCADE, related_name='imagenes')
+    imagen = models.ImageField(upload_to='fotos')
 
 class TipologiaConstructiva(models.Model):
    

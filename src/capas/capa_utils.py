@@ -2,7 +2,7 @@ from .geometrias import MultiPoligono, Poligono, Punto, Linea, MultiPunto, Multi
 from django.contrib.gis.db import models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from django.db import connection
-from .models import Capas, Atributos, Categoria
+from .models import Capas, Atributos, Categoria, Parametro
 from rest_framework.exceptions import ValidationError
 import json
 
@@ -40,6 +40,12 @@ class CapaImporter():
             return models.IntegerField()
         elif tipo == Atributos.FLOTANTE:
             return models.FloatField()
+        elif tipo == Parametro.IMAGEN:
+            return models.ImageField(upload_to="/")
+        elif tipo == Parametro.DATE:
+            return models.DateField()
+        elif tipo == Parametro.DATETIME:
+            return models.DateTimeField()
         else:
             return models.RasterField()
 
@@ -182,7 +188,6 @@ class CapaImporter():
         if geom is None:
             raise ValidationError({"capa": "falta atributo geom"})
         opciones.update({"geom": self.get_tipo(geom.tipo)})
-
         for i in instancia.atributos.all():
             if i.nombre.lower() in ["id", "geom"]:
                 continue
