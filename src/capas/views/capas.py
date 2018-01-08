@@ -71,7 +71,6 @@ class CapasRecursos(viewsets.ModelViewSet):
             except ValueError:
                 raise ValidationError({"mensaje": "el geojson es invalido"})
 
-
         modelo = crear_modelo(nombre)
 
         if request.method == "GET":
@@ -82,18 +81,16 @@ class CapasRecursos(viewsets.ModelViewSet):
     @transaction.atomic
     @list_route(methods=['post'], url_path=r'importar')
     def importar(self, request, *args, **kwargs):
-        def validar(_file):
-            if _file is None:
-                raise ValidationError({"file":"es necesario la capa"})
-        _file = self.request.data.get('file')
-        validar(_file)
+        geojson = self.request.data.get('geojson')
         nombre = self.request.data.get("nombre")
         categoria = self.request.data.get("categoria")
         if nombre is None:
-            nombre = _file.name.replace(".geojson", "")
+            raise ValidationError({"nombre":"es requerida"})
         if categoria is None:
-            categoria = 1
-        geo = pygeoj.load(_file.fileno())
+            raise ValidationError({"categoria":"es requerida"})
+        if geojson is None:
+            raise ValidationError({"geojson":"es necesario la capa"})
+        geo = pygeoj.load(data=geojson)
         importer = CapaImporter(geo, nombre, categoria)
         importer.importar_tabla()
         return Response()
