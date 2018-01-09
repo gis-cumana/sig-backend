@@ -145,6 +145,7 @@ class CapaImporter():
         if obj.properties.get("pk") is not None:
             obj.properties.pop("pk")
         [datos.update({key.lower(): value}) for key, value in obj.properties.items()]
+        print(obj.geometry.type)
         valor = self.get_valor(obj.geometry.type, obj.geometry.coordinates)
         
         datos.update({"geom": valor})
