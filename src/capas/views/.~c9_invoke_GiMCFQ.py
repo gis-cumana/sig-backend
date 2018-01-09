@@ -61,10 +61,10 @@ class CapasRecursos(viewsets.ModelViewSet):
                     if nuevo is not None or modificar is not None or eliminar is not None:
                         data.append(i)
                 geo._data["features"] = data
-                
+                import
                 importer = CapaImporter(geo, None, None, verificar_nombre=False,
                                         verificar_categoria=False)
-
+                                        
                 importer.alterar_registros(modelo)
 
                 queryset = modelo.objects.all()

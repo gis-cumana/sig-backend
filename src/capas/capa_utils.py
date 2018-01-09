@@ -124,7 +124,7 @@ class CapaImporter():
         esquema = BaseDatabaseSchemaEditor(connection)
         esquema.deferred_sql = []
         esquema.create_model(modelo)
-        self.alterar_registros(modelo)
+        self.alterar_registros_nuevo(modelo)
         self.registrar_estructura(attrs)
 
     def alterar_registros(self, modelo):
@@ -135,8 +135,10 @@ class CapaImporter():
                 self.insertar_registros(modelo, obj)
             if obj.properties.get("eliminar"):
                 self.eliminar_registros(modelo, obj)
-            else:
-                self.insertar_registros(modelo, obj, new=True)
+    
+    def alterar_registros_nuevo(self, modelo):
+        for obj in self.capa:
+            self.insertar_registros(modelo, obj, new=True)
 
     def insertar_registros(self, modelo, obj, new=False):
         datos = {}
