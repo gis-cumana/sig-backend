@@ -126,7 +126,7 @@ class CapaImporter():
         esquema = BaseDatabaseSchemaEditor(connection)
         esquema.deferred_sql = []
         esquema.create_model(modelo)
-        self.insertar_registros(modelo)
+        self.alterar_registros(modelo)
         self.registrar_estructura(attrs)
 
     def alterar_registros(self, modelo):
