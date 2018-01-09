@@ -27,5 +27,10 @@ class Poligono(Polygon):
 
 class MultiPoligono(Polygon):
     def get(value):
-        poligono = Polygon(value[0][0])
-        return MultiPolygon(poligono)
+        lista = []
+        if len(value[0]) == 1:
+            lista.append(Polygon(value[0][0]))
+        else:
+            for i in range(len(value[0])):
+                lista.append(Polygon(value[0][i][0]))
+        return MultiPolygon(lista)
