@@ -2,6 +2,8 @@ from django.contrib.gis.db import models
 from django.contrib.gis.geos.point import Point
 from django.contrib.gis.geos.collections import MultiPolygon, MultiLineString
 from rest_framework.exceptions import ValidationError
+from django.contrib.auth.models import User
+
 
 class Categoria(models.Model):
     nombre =  models.CharField(max_length=30, unique=True)
@@ -47,6 +49,10 @@ class Atributos(models.Model):
     ENTERO = 'Int'
     FLOTANTE = 'Float'
     LINEA_MULTIPLE = 'MultiLineString'
+    IMAGEN = 'Image'
+    EMAIL = 'Email'
+    DATE = 'Date'
+    DATETIME = 'DateTime'
 
     GEOMETRICOS = (PUNTO, POLIGONO, LINEA, POLIGONO_MULTIPLE, LINEA_MULTIPLE, LINEA_MULTIPLE,)
 
@@ -58,7 +64,11 @@ class Atributos(models.Model):
         (ENTERO, ENTERO),
         (FLOTANTE, FLOTANTE),
         (POLIGONO_MULTIPLE, POLIGONO_MULTIPLE),
-        (LINEA_MULTIPLE, LINEA_MULTIPLE)
+        (LINEA_MULTIPLE, LINEA_MULTIPLE),
+        (IMAGEN, IMAGEN),
+        (EMAIL, EMAIL),
+        (DATE, DATE),
+        (DATETIME, DATETIME),
     )
 
     capa = models.ForeignKey(Capas, on_delete=models.CASCADE,
@@ -69,11 +79,16 @@ class Atributos(models.Model):
 
     @property
     def eliminable(self):
-        return self.nombre != "geom"
+        if self.nombre != "geom":
+            return not self.capa.categoria.parametros.filter(nombre=self.nombre).exists()
+        return False
+
 
     @property
     def modificable(self):
-        return self.nombre != "geom"
+        if self.nombre != "geom":
+            return not self.capa.categoria.parametros.filter(nombre=self.nombre).exists()
+        return False
 
 def crear_modelo(nombre):
     opciones = {
@@ -107,3 +122,62 @@ def buscar_capa_y_atributos(nombre):
             "capa": "no existe"
         }
         raise ValidationError(error)
+
+class Parametro(models.Model):
+    TEXTO = 'Text'
+    ENTERO = 'Int'
+    FLOTANTE = 'Float'
+    IMAGEN = 'Image'
+    EMAIL = 'Email'
+    DATE = 'Date'
+    DATETIME = 'DateTime'
+
+    TIPO_CHOICES = (
+        (TEXTO, TEXTO),
+        (ENTERO, ENTERO),
+        (FLOTANTE, FLOTANTE),
+        (IMAGEN, IMAGEN),
+        (EMAIL, EMAIL),
+        (DATE, DATE),
+        (DATETIME, DATETIME)
+    )
+
+    nombre = models.CharField(max_length=30, unique=True)
+    tipo = models.CharField(max_length=30, choices=TIPO_CHOICES)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE,
+                             related_name='parametros')
+    @property
+    def eliminable(self):
+        return not self.categoria.capas.all().exists()
+    
+    
+    def __str__(self):
+        return self.nombre
+
+
+class Casos(models.Model):
+   
+    descripcion = models.CharField(max_length=255)    
+    fecha = models.DateField(blank=True)
+    hora = models.TimeField(blank=True)
+    fecha_creado = models.DateField(blank=True)
+    hora_creado =  models.TimeField(blank=True)
+    visible = models.BooleanField(default=False)
+    geom = models.PointField()
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Casos')
+    capa = models.ForeignKey(Capas, null=True, on_delete=models.CASCADE, related_name='Casos')
+    registro = models.IntegerField(null=True)
+
+class Imagen(models.Model):
+    caso = models.ForeignKey(Casos, on_delete=models.CASCADE, related_name='imagenes')
+    imagen = models.ImageField(upload_to='fotos')
+
+class TipologiaConstructiva(models.Model):
+   
+    descripcion = models.CharField(max_length=255)    
+    nombre_centro = models.CharField(max_length=255, unique=True)
+    estandar = models.CharField(max_length=255)    
+    anyo = models.CharField(max_length=4)
+
+    def __str__(self):
+        return self.nombre

@@ -6,7 +6,6 @@ from capas.serializadores import CapaSerializador, CapaListSerializador
 import pygeoj
 import json
 from django.core.serializers import serialize
-from rest_framework.parsers import FormParser, MultiPartParser, FileUploadParser
 from capas.capa_utils import CapaImporter
 from django.db import connection, transaction
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
@@ -30,7 +29,7 @@ class CapasRecursos(viewsets.ModelViewSet):
 
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action in ['list', 'retrieve']:
             return CapaListSerializador
         return CapaSerializador
 
@@ -45,7 +44,12 @@ class CapasRecursos(viewsets.ModelViewSet):
             return Response(data)
 
         def update(request, modelo):
-            datos = request.data.get("data").replace("'", "\"")
+            datos = request.data.get("data")
+            if datos is None:
+                raise ValidationError({"data":"es necesario en geojson"})
+            if not isinstance(datos, str):
+                raise ValidationError({"data":"debe ser un str"})
+            datos = datos.replace("'", "\"")
             try:
                 datos = json.loads(datos)
                 geo = pygeoj.load(data=datos)
@@ -66,13 +70,13 @@ class CapasRecursos(viewsets.ModelViewSet):
                                  geometry_field='geom')
                 data = json.loads(data)
                 return Response(data)
-            except json.decoder.JSONDecodeError as e:
-                raise ValidationError({"mensaje": "json invalido, "+e})
-            except ValueError:
+            #except json.decoder.JSONDecodeError as e:
+            #    raise ValidationError({"mensaje": "json invalido, "+e})
+            except ValueError as e:
+                print(e)
                 raise ValidationError({"mensaje": "el geojson es invalido"})
-
+        
         modelo = crear_modelo(nombre)
-
         if request.method == "GET":
             return get(request, modelo)
         elif request.method == "PUT":
@@ -81,16 +85,18 @@ class CapasRecursos(viewsets.ModelViewSet):
     @transaction.atomic
     @list_route(methods=['post'], url_path=r'importar')
     def importar(self, request, *args, **kwargs):
-        geojson = self.request.data.get('geojson')
+        def validar(capa):
+            if capa is None:
+                raise ValidationError({"data":"es necesario la capa"})
+        capa = self.request.data.get('data')
+        validar(capa)
         nombre = self.request.data.get("nombre")
         categoria = self.request.data.get("categoria")
         if nombre is None:
-            raise ValidationError({"nombre":"es requerida"})
+           raise ValidationError({"nombre": "es requerido"})
         if categoria is None:
-            raise ValidationError({"categoria":"es requerida"})
-        if geojson is None:
-            raise ValidationError({"geojson":"es necesario la capa"})
-        geo = pygeoj.load(data=geojson)
+            categoria = 1
+        geo = pygeoj.load(data=capa)
         importer = CapaImporter(geo, nombre, categoria)
         importer.importar_tabla()
         return Response()
