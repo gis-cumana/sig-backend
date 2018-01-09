@@ -96,6 +96,7 @@ class CapasRecursos(viewsets.ModelViewSet):
            raise ValidationError({"nombre": "es requerido"})
         if categoria is None:
             categoria = 1
+        capa = json.loads(capa)
         geo = pygeoj.load(data=capa)
         importer = CapaImporter(geo, nombre, categoria)
         importer.importar_tabla()
