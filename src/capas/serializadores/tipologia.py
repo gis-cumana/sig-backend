@@ -24,4 +24,4 @@ class TipologiaListSerializador(serializers.ModelSerializer):
     #link = serializers.HyperlinkedIdentityField(view_name='casos-detail', format='html')
     class Meta:
         model = TipologiaConstructiva
-        fields = ("id", "nombre_centro", "descripcion", "anyo", "link")
+        fields = ("id", "nombre", "descripcion", "anyo", "link")

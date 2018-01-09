@@ -175,9 +175,9 @@ class Imagen(models.Model):
 class TipologiaConstructiva(models.Model):
    
     descripcion = models.CharField(max_length=255)    
-    nombre_centro = models.CharField(max_length=255, unique=True)
+    nombre = models.CharField(max_length=255, unique=True)
     estandar = models.CharField(max_length=255)    
-    anyo = models.CharField(max_length=4)
+    anyo = models.IntegerField()
 
     def __str__(self):
         return self.nombre

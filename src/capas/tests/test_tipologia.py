@@ -11,9 +11,9 @@ class GETSingleTipologiaTest(APITestCase):
     """ Test module for GET single Tipologia API """
     
     def setUp(self):
-        TipologiaConstructiva.objects.create(id=1, descripcion='tipo 1', nombre_centro='principal', estandar='1.0', anyo='2000')
-        TipologiaConstructiva.objects.create(id=2, descripcion='tipo 2', nombre_centro='secundario', estandar='2.0', anyo='2010')
-        TipologiaConstructiva.objects.create(id=3, descripcion='tipo 3', nombre_centro='terciario', estandar='3.0', anyo='2015')
+        TipologiaConstructiva.objects.create(id=1, descripcion='tipo 1', nombre='principal', estandar='1.0', anyo='2000')
+        TipologiaConstructiva.objects.create(id=2, descripcion='tipo 2', nombre='secundario', estandar='2.0', anyo='2010')
+        TipologiaConstructiva.objects.create(id=3, descripcion='tipo 3', nombre='terciario', estandar='3.0', anyo='2015')
         
     
     def test_get_valid_single_Tipologia(self):
@@ -30,8 +30,8 @@ class CreateNewTipologiaTest(APITestCase):
     """ Test module for create new Tipologia """
     
     def setUp(self):
-        self.valid_payload = {'descripcion':'tipo 3', 'nombre_centro':'terciario', 'estandar':'3.0', 'anyo':'2015'}
-        self.invalid_payload ={'descripcion':'', 'nombre_centro': '', 'estandar':'', 'anyo':''}
+        self.valid_payload = {'descripcion':'tipo 3', 'nombre':'terciario', 'estandar':'3.0', 'anyo':'2015'}
+        self.invalid_payload ={'descripcion':'', 'nombre': '', 'estandar':'', 'anyo':''}
             
 
     def test_create_valid_tipologia(self):
@@ -52,12 +52,12 @@ class UpdateSingleTipologiaTest(APITestCase):
     
     
     def setUp(self):
-        TipologiaConstructiva.objects.create(id=1, descripcion='tipo 1', nombre_centro='principal', estandar='1.0', anyo='2000')
-        TipologiaConstructiva.objects.create(id=2, descripcion='tipo 2', nombre_centro='secundario', estandar='2.0', anyo='2010')
-        TipologiaConstructiva.objects.create(id=3, descripcion='tipo 3', nombre_centro='terciario', estandar='3.0', anyo='2015')
+        TipologiaConstructiva.objects.create(id=1, descripcion='tipo 1', nombre='principal', estandar='1.0', anyo='2000')
+        TipologiaConstructiva.objects.create(id=2, descripcion='tipo 2', nombre='secundario', estandar='2.0', anyo='2010')
+        TipologiaConstructiva.objects.create(id=3, descripcion='tipo 3', nombre='terciario', estandar='3.0', anyo='2015')
         
-        self.valid_payload = {'descripcion':'tipo 1.1', 'nombre_centro':'principal', 'estandar':'3.0', 'anyo':'2015'}
-        self.invalid_payload ={'descripcion':'', 'nombre_centro': '', 'estandar':'', 'anyo':''}
+        self.valid_payload = {'descripcion':'tipo 1.1', 'nombre':'principal', 'estandar':'3.0', 'anyo':'2015'}
+        self.invalid_payload ={'descripcion':'', 'nombre': '', 'estandar':'', 'anyo':''}
     
     
     def test_valid_update_tipologia(self):
@@ -74,8 +74,8 @@ class DeleteSingleTipologiaTest(APITestCase):
     """ Test module for deleting an existing  Tipologia record """
     
     def setUp(self):
-        TipologiaConstructiva.objects.create(id=1, descripcion='tipo 1', nombre_centro='principal', estandar='1.0', anyo='2000')
-        TipologiaConstructiva.objects.create(id=2, descripcion='tipo 2', nombre_centro='secundario', estandar='2.0', anyo='2010')
+        TipologiaConstructiva.objects.create(id=1, descripcion='tipo 1', nombre='principal', estandar='1.0', anyo='2000')
+        TipologiaConstructiva.objects.create(id=2, descripcion='tipo 2', nombre='secundario', estandar='2.0', anyo='2010')
         
     def test_valid_delete_tipologia(self):
         response = self.client.delete('/tipologias/1')
