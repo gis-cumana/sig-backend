@@ -149,34 +149,41 @@ class Parametro(models.Model):
     @property
     def eliminable(self):
         return not self.categoria.capas.all().exists()
-    
-    
+
+    def __str__(self):
+        return self.nombre
+
+class Suceso(models.Model):
+    nombre = models.CharField(max_length=30)
+    fecha = models.DateField()
+    hora = models.TimeField()
+    usuario = models.ForeignKey(User, null=True, on_delete=models.CASCADE, related_name='sucesos')
+
     def __str__(self):
         return self.nombre
 
 
 class Casos(models.Model):
-   
-    descripcion = models.CharField(max_length=255)    
-    fecha = models.DateField(blank=True)
-    hora = models.TimeField(blank=True)
-    fecha_creado = models.DateField(blank=True)
-    hora_creado =  models.TimeField(blank=True)
+
+    descripcion = models.CharField(max_length=255)
+    fecha = models.DateField()
+    hora = models.TimeField()
+    fecha_creado = models.DateField()
+    hora_creado =  models.TimeField()
     visible = models.BooleanField(default=False)
     geom = models.PointField()
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Casos')
-    capa = models.ForeignKey(Capas, null=True, on_delete=models.CASCADE, related_name='Casos')
-    registro = models.IntegerField(null=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='casos')
+    suceso = models.ForeignKey(Suceso, null=True, on_delete=models.CASCADE, related_name='casos')
 
 class Imagen(models.Model):
     caso = models.ForeignKey(Casos, on_delete=models.CASCADE, related_name='imagenes')
-    imagen = models.ImageField(upload_to='fotos')
+    imagen = models.TextField()
 
 class TipologiaConstructiva(models.Model):
-   
-    descripcion = models.CharField(max_length=255)    
+
+    descripcion = models.CharField(max_length=255)
     nombre_centro = models.CharField(max_length=255, unique=True)
-    estandar = models.CharField(max_length=255)    
+    estandar = models.CharField(max_length=255)
     anyo = models.CharField(max_length=4)
 
     def __str__(self):

@@ -10,7 +10,7 @@ class CasosRecursos(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
-        if self.action in ["list", "retrieve"]:    
+        if self.action in ["list", "retrieve"]:
             return CasosListSerializador
         return CasosSerializador
 
@@ -20,10 +20,4 @@ class CasosRecursos(viewsets.ModelViewSet):
         return Response(status=204)
 
     def perform_create(self, serializer):
-        serializer.save(usuario=self.request.user)    
-
-
-
-class ImagenRecursos(viewsets.ModelViewSet):
-    queryset = Imagen.objects.all()
-    serializer_class = ImagenSerializador
+        serializer.save(usuario=self.request.user)
