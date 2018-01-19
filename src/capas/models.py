@@ -1,5 +1,5 @@
 from django.contrib.gis.db import models
-from django.contrib.gis.geos.point import Point
+from django.contrib.gis.geos import Point, Polygon
 from django.contrib.gis.geos.collections import MultiPolygon, MultiLineString
 from rest_framework.exceptions import ValidationError
 from django.contrib.auth.models import User
@@ -181,3 +181,61 @@ class TipologiaConstructiva(models.Model):
 
     def __str__(self):
         return self.nombre
+
+
+
+""" Probablemente sea eliminada aunque es lo correcto para gis """
+class Territorio(models.Model):
+    nombre = models.CharField(max_length=255)
+    tipo = models.CharField(max_length=60)
+    geom = models.PolygonField(null=True, blank=True)          
+    parentid = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='dependencias',)    
+    poblacion_censo = models.IntegerField(default=0)
+    poblacion_determinada = models.IntegerField(default=0)
+    estado =models.CharField(max_length=255, blank=True)
+    municipio =models.CharField(max_length=255, blank=True)
+    parroquia =models.CharField(max_length=255, blank=True)
+    
+class GeoUnidad(models.Model):
+    nombre = models.CharField(max_length=255)
+    descripcion = models.CharField(max_length=255, null=True, blank=True)
+    area = models.FloatField(default=0)
+    indiceAmenaza = models.FloatField(default=0)
+    indiceVulnerabilidad = models.FloatField(default=0)
+    indiceRiesgo = models.FloatField(default=0)
+    fuente = models.CharField(max_length=255, null=True)
+    anyo = models.IntegerField(default=1900)
+    geom = models.PolygonField()          
+    status = models.CharField(max_length=20, null=True, blank=True)
+    territorio = models.ForeignKey(Territorio, on_delete=models.CASCADE, related_name='geounidades')    
+
+    @property
+    def eliminable(self):
+        return not (self.comunidades.all().exists() or self.riesgos.all().exists())
+
+
+
+class Riesgos(models.Model):
+    indiceVulnerabilidad = models.FloatField(default=0)
+    indiceAmenaza = models.FloatField(default=0)
+    indiceRiesgo = models.FloatField(default=0)
+    anyo = models.IntegerField(default=1900)
+    fuente = models.CharField(null=True, blank=True, max_length=255)
+    indiceModificado =  models.CharField(null=True, blank=True, max_length=255)
+    activo = models.BooleanField(default=False)
+    geounidad = models.ForeignKey(GeoUnidad, on_delete=models.CASCADE, related_name='riesgos')
+
+#[[-0.2, -0.1],[ -0.2, -0.2],[ 1, 2],[ 1, 1],[ -0.2, -0.1]]    
+class Comunidad(models.Model):
+    nombre = models.CharField(max_length=255)
+    descripcion = models.CharField(max_length=255, null=True,blank=True)
+    poblacion = models.IntegerField(default=0)
+    area = models.FloatField(default=0.0)
+    indiceVulnerabilidad = models.FloatField(default=0)
+    indiceAmenaza = models.FloatField(default=0)
+    indiceRiesgo = models.FloatField(default=0)
+    estatus_social = models.CharField(max_length=255, null=True,blank=True)
+    geom = models.PolygonField()
+    geounidad = models.ForeignKey(GeoUnidad, on_delete=models.CASCADE, related_name='comunidades', null=True)
+    tipologiaConstructiva = models.ForeignKey(TipologiaConstructiva, on_delete=models.CASCADE, related_name='comunidades', null=True)
+    terrtitorio = models.ForeignKey(Territorio, on_delete=models.CASCADE, related_name='comunidades', null=True)

@@ -5,3 +5,7 @@ from .parametros import ParametrosRecursos
 from .casos import CasosRecursos, ImagenRecursos
 from .usuarios import UsuariosRecursos
 from .tipologia import TipologiaRecursos
+from .territorio import TerritorioRecursos
+from .geounidad import GeoUnidadRecursos
+from .comunidad import ComunidadRecursos
+from .riesgos import RiesgosRecursos

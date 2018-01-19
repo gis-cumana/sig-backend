@@ -7,10 +7,14 @@ from capas.views import CapasRecursos, CategoriasRecursos,\
 from capas.views import CasosRecursos
 from capas.views import UsuariosRecursos
 from capas.views import TipologiaRecursos
+from capas.views import TerritorioRecursos, GeoUnidadRecursos, ComunidadRecursos, RiesgosRecursos
+
+
 from django.conf import settings
 from django.conf.urls.static import static
 
 router = RaizRouter(trailing_slash=False)
+
 router.register("capas", CapasRecursos)
 router.register("categorias", CategoriasRecursos)
 router.register("atributos", AtributosRecursos)
@@ -19,6 +23,10 @@ router.register("casos", CasosRecursos)
 router.register("tipologias", TipologiaRecursos)
 router.register("usuarios", UsuariosRecursos)
 router.register("imagenes", ImagenRecursos)
+router.register("territorios", TerritorioRecursos)
+router.register("geounidades", GeoUnidadRecursos)
+router.register("comunidades", ComunidadRecursos)
+router.register("riesgos", RiesgosRecursos)
 
 
 urlpatterns = [

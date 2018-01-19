@@ -20,7 +20,7 @@ class CapaCategoriaSerializador(serializers.ModelSerializer):
         fields = ("id", "nombre", "tipo", "link")
 
 class CapaSerializador(serializers.ModelSerializer):
-    #atributos = AtributoListarSerializador(many=True)
+    
     tipo = serializers.ChoiceField(choices=(Atributos.GEOMETRICOS))
     class Meta:
         model = Capas
