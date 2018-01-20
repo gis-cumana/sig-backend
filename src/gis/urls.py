@@ -8,6 +8,8 @@ from capas.views import CasosRecursos
 from capas.views import UsuariosRecursos
 from capas.views import TipologiaRecursos
 from capas.views import TerritorioRecursos, GeoUnidadRecursos, ComunidadRecursos, RiesgosRecursos
+from capas.views import ViviendaRecursos, CentroSaludEmergenciaRecursos, CentroEducativoRecursos 
+from capas.views import ConsejoComunalRecursos, CensoRecursos
 
 
 from django.conf import settings
@@ -27,7 +29,11 @@ router.register("territorios", TerritorioRecursos)
 router.register("geounidades", GeoUnidadRecursos)
 router.register("comunidades", ComunidadRecursos)
 router.register("riesgos", RiesgosRecursos)
-
+router.register("viviendas", ViviendaRecursos)
+router.register("centrosSaludEmergencias", CentroSaludEmergenciaRecursos)
+router.register("centrosEducativos", CentroEducativoRecursos)
+router.register("consejosComunales", ConsejoComunalRecursos)
+router.register("censos", CensoRecursos)
 
 urlpatterns = [
     url(r'^', include(router.urls)),

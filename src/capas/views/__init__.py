@@ -9,3 +9,8 @@ from .territorio import TerritorioRecursos
 from .geounidad import GeoUnidadRecursos
 from .comunidad import ComunidadRecursos
 from .riesgos import RiesgosRecursos
+from .vivienda import ViviendaRecursos
+from .centrosaludemergencia import CentroSaludEmergenciaRecursos
+from .centroeducativo import CentroEducativoRecursos
+from .consejocomunal import ConsejoComunalRecursos
+from .censo import CensoRecursos

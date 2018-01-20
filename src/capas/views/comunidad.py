@@ -21,25 +21,16 @@ class ComunidadRecursos(viewsets.ModelViewSet):
     
     def destroy(self, request, *args, **kwargs):
         objeto = self.get_object()
-        """
+        
         if not objeto.eliminable: 
             respuesta = {
-                "mensaje": "Comunidad no se puede eliminar, tiene  comunidades asociadas y/o historico de riesgos"
+                "mensaje": "Comunidad no se puede eliminar, tiene viviendas asociadas"
             }
             return Response(respuesta,status=400)
 
         self.perform_destroy(objeto)
-        return Response(status=204)    
-        """ 
-    """"
-    @list_route(methods=['get', 'put'])
-    def get(self, request):
-        queryset = Comunidad.objects.all()
-        data = serialize('geojson', queryset, geometry_field='geom')
-        data = json.loads(data)
-        return Response(data)
-
-    """    
+        return Response(status=204)          
+    
 
 
 
