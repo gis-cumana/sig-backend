@@ -6,6 +6,8 @@ from rest_framework.exceptions import ValidationError
 import pygeoj
 import json
 
+
+
 class ConsejoComunalSerializador(serializers.ModelSerializer):
     
       
@@ -23,9 +25,6 @@ class ConsejoComunalSerializador(serializers.ModelSerializer):
             datos.update({"indiceVulnerabilidad":datos.get("comunidad").indiceVulnerabilidad})
             datos.update({"indiceAmenaza":datos.get("comunidad").indiceAmenaza})
             datos.update({"indiceRiesgo":datos.get("comunidad").indiceRiesgo})
-
-        
-        
 
         """ pop geom from datos """
         geom = datos.pop("geom")

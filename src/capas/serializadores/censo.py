@@ -6,6 +6,8 @@ from rest_framework.exceptions import ValidationError
 from datetime import datetime, date, time
 import pygeoj
 import json
+from django.db import transaction
+
 
 class CensoSerializador(serializers.ModelSerializer):
     
@@ -16,7 +18,7 @@ class CensoSerializador(serializers.ModelSerializer):
         read_only_fields = ("poblacionCenso","indiceAmenaza","indiceVulnerabilidad","indiceRiesgo")
 
 
-    
+    @transaction.atomic    
     def create(self, datos):
         
         if "fecha" in datos.keys() and datos.get("fecha") > datetime.now().date():
@@ -35,7 +37,7 @@ class CensoSerializador(serializers.ModelSerializer):
         return objeto
         
         
-    
+    @transaction.atomic    
     def update(self, instance, datos):
         
         if "fecha" in datos.keys() and datos.get("fecha") > datetime.now().date():
