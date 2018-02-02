@@ -8,18 +8,20 @@ from capas.serializadores import TerritorioSerializador, TerritorioListSerializa
 
 
 class TerritorioRecursos(viewsets.ModelViewSet):
-    queryset = Territorio.objects.all()
+    
+    queryset= Territorio.objects.all()
     serializer_class = TerritorioSerializador
 
     def get_serializer_class(self):
-        
-        if self.action in ['list', "retrieve"]:
+       	if self.action in ['list', "retrieve"]:
             return TerritorioListSerializador
         return TerritorioSerializador
-
-    @list_route(methods=['get', 'put'], url_path=r'estado/')
-    def tipos_territorio(self, request):
-        pass
-
     
-         
+    """
+    @list_route(methods=['get'], url_path=r'territorio/(?P<tipo>[^/]+)')    
+    def get_queryset(self):
+      	tipo = self.kwargs['tipo']
+    	return Territorio.objects.filter(tipo=tipo)
+
+    """    
+    

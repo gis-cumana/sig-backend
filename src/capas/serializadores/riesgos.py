@@ -18,6 +18,7 @@ class RiesgosSerializador(serializers.ModelSerializer):
 
     def create(self, datos):
         with transaction.atomic():    
+            """ Busca el riesgo activo para la geounidad seleccionada """
             riesgoActivo = Riesgos.objects.filter(activo=True,geounidad=datos.get("geounidad"))        
             if riesgoActivo.exists():
                 riesgoActivo = riesgoActivo.get()

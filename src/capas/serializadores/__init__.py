@@ -3,7 +3,7 @@ from .capas import CapaListSerializador, CapaSerializador
 from .atributos import AtributoSerializador
 from .parametros import ParametroSerializador, ParametroListSerializador
 from .casos import CasosListSerializador, CasosSerializador
-from .usuarios import UsuarioSerializador, UsuarioListSerializador
+from .usuarios import UsuarioSerializador, UsuarioListSerializador, UserSerializer, UserDetailsSerializer
 from .tipologia import TipologiaSerializador, TipologiaListSerializador
 from .territorio import TerritorioSerializador, TerritorioListSerializador
 from .geounidad import GeoUnidadSerializador, GeoUnidadListSerializador

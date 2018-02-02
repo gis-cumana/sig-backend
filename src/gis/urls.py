@@ -25,7 +25,6 @@ router.register("casos", CasosRecursos)
 router.register("tipologias", TipologiaRecursos)
 router.register("usuarios", UsuariosRecursos)
 router.register("imagenes", ImagenRecursos)
-router.register("territorios", TerritorioRecursos)
 router.register("geounidades", GeoUnidadRecursos)
 router.register("comunidades", ComunidadRecursos)
 router.register("riesgos", RiesgosRecursos)
@@ -37,6 +36,8 @@ router.register("censos", CensoRecursos)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    #url(r'^admin/', include(admin.site.urls)),
+        
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

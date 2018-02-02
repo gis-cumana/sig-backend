@@ -1,6 +1,7 @@
 import os
 from os.path import dirname, join, exists
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
@@ -19,9 +20,19 @@ FILE_UPLOAD_HANDLERS = {
     'django.core.files.uploadhandler.TemporaryFileUploadHandler',
 }
 
+AUTHENTICATION_BACKENDS = (
+    
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # allauth specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend'
+    
+)
+
+
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
+        'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -29,8 +40,19 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'django.contrib.gis',
-    'capas.apps.CapasConfig'
+    'capas.apps.CapasConfig',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'django.contrib.sites',
+    'django.contrib.auth',
+    'rest_auth.registration',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',     
+    
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [  
     'corsheaders.middleware.CorsMiddleware',
@@ -40,7 +62,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',    
+
 ]
 
 ROOT_URLCONF = 'gis.urls'
@@ -62,8 +85,12 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',                                
             ],
+            
         },
+
     },
 ]
 
@@ -106,6 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
 
 
 LANGUAGE_CODE = 'es-AR'

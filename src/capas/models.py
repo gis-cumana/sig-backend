@@ -186,15 +186,15 @@ class TipologiaConstructiva(models.Model):
 
 """ Probablemente sea eliminada aunque es lo correcto para gis """
 class Territorio(models.Model):
+    geom = models.PolygonField(null=True, blank=True)          
     nombre = models.CharField(max_length=255)
     tipo = models.CharField(max_length=60)
-    geom = models.PolygonField(null=True, blank=True)          
-    parentid = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='dependencias',)    
-    poblacion_censo = models.IntegerField(default=0)
-    poblacion_determinada = models.IntegerField(default=0)
+    poblacionCenso = models.IntegerField(default=0)
+    poblacionDeterminada = models.IntegerField(default=0)
     estado =models.CharField(max_length=255, blank=True)
     municipio =models.CharField(max_length=255, blank=True)
     parroquia =models.CharField(max_length=255, blank=True)
+    parentid = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='dependencias',)    
     
 class GeoUnidad(models.Model):
     nombre = models.CharField(max_length=255)
@@ -349,3 +349,11 @@ class Censo(models.Model):
     totalHabitantes = models.IntegerField(default=0)
     totalViviendas = models.IntegerField(default=0)
     consejocomunal = models.ForeignKey(ConsejoComunal, on_delete=models.CASCADE, related_name='censo') 
+
+class Role(models.Model):
+    nombre = models.CharField(max_length=50,unique=True)
+    descripcion =   models.CharField(max_length=50,unique=True)    
+
+class Usuario(models.Model):
+    institucion =  models.CharField(max_length=255,blank=True,null=True)
+    user = models.OneToOneField(User)  
