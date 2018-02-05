@@ -10,6 +10,7 @@ from capas.views import TipologiaRecursos
 from capas.views import TerritorioRecursos, GeoUnidadRecursos, ComunidadRecursos, RiesgosRecursos
 from capas.views import ViviendaRecursos, CentroSaludEmergenciaRecursos, CentroEducativoRecursos 
 from capas.views import ConsejoComunalRecursos, CensoRecursos
+from capas.views import GruposRecursos
 
 
 from django.conf import settings
@@ -33,10 +34,16 @@ router.register("centrosSaludEmergencias", CentroSaludEmergenciaRecursos)
 router.register("centrosEducativos", CentroEducativoRecursos)
 router.register("consejosComunales", ConsejoComunalRecursos)
 router.register("censos", CensoRecursos)
+router.register("territorios", TerritorioRecursos)
+router.register("grupos", GruposRecursos)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
-    #url(r'^admin/', include(admin.site.urls)),
+    #url(r'^api-auth/', include('rest_framework.urls')),
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    #url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^accounts/', include('allauth.urls')),
+    url(r'^admin/', include(admin.site.urls))
         
 ]
 

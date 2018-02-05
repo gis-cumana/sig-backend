@@ -1,10 +1,12 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from capas.models import Usuario
 from rest_auth.serializers import UserDetailsSerializer
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from .grupos import GruposSerializador
+from django.db import transaction
 
 try:
     from allauth.account import app_settings as allauth_settings
@@ -33,8 +35,7 @@ class UsuarioSerializador(serializers.ModelSerializer):
 
     class Meta:
         model = Usuario
-        fields = ("id", "email", "username", "password","password2")
-        read_only_fields=("username", )        
+        fields = ("id", "email", "username", "password","password2")       
 
         
 
@@ -79,17 +80,31 @@ class UsuarioSerializador(serializers.ModelSerializer):
     
 
 class UserSerializer(UserDetailsSerializer):
+
+
     
     institucion = serializers.CharField(source="usuario.institucion")
-
+    grupos = serializers.CharField(source="usuario.grupos")
+    
     class Meta(UserDetailsSerializer.Meta):
-        fields = UserDetailsSerializer.Meta.fields + ('institucion',)  
+        fields = UserDetailsSerializer.Meta.fields  + ("institucion", "grupos",)    
+       
 
+    @transaction.atomic    
     def update(self, instance, validated_data):
 
+       
         usuario_data = validated_data.pop('usuario', {})
         institucion = usuario_data.get('institucion')
+        grupos = usuario_data.get('grupos')
+
         
+        grupos = Group.objects.filter(name=grupos)
+        
+        if not grupos:
+            raise serializers.ValidationError(("El grupo asignado no existe"))
+
+
         instance = super(UserSerializer, self).update(instance, validated_data)
 
         try:
@@ -97,27 +112,26 @@ class UserSerializer(UserDetailsSerializer):
         except ObjectDoesNotExist:
             usuario = Usuario()
 
-        if usuario_data and institucion:
+        
+    
+        if usuario_data and institucion and grupos:
             usuario.institucion = institucion
+            usuario.grupos = grupos.get()
             usuario.user_id = instance.id
             usuario.save()
+
         return instance
 
 
-class UserDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = get_user_model()
 
-        fields = ('username','email', 'first_name', 'last_name')
+class UserDetailsSerializer(serializers.ModelSerializer):
+    
+
+    class Meta:
+        model = User
+
+        fields = ('first_name', 'last_name', 'is_active',)
         read_only_fields = ('username','email',)
 
 
-class UsuarioListSerializador(serializers.ModelSerializer):
-    
-    link = serializers.HyperlinkedIdentityField(view_name='user-detail', format='html')
-    
-    
-    class Meta:
-        model = Usuario
-        fields = ("id", "email","username", "first_name", "last_name",  "is_active", "role","fechaCreacion","link")
 

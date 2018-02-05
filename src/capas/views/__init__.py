@@ -14,3 +14,4 @@ from .centroeducativo import CentroEducativoRecursos
 from .consejocomunal import ConsejoComunalRecursos
 from .censo import CensoRecursos
 from .territorio import TerritorioRecursos
+from .grupos import GruposRecursos

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.response import Response
-from capas.serializadores.usuarios import UsuarioSerializador, UsuarioListSerializador
+from capas.serializadores.usuarios import UsuarioSerializador
 from capas.models import Usuario
 
 class UsuariosRecursos(viewsets.ModelViewSet):
@@ -10,7 +10,7 @@ class UsuariosRecursos(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action in ['list', "retrieve"]:
-            return UsuarioListSerializador
+            return UsuarioSerializador
         return UsuarioSerializador
    
    
@@ -19,10 +19,7 @@ class UsuariosRecursos(viewsets.ModelViewSet):
         objeto.is_active = False
         objeto.save()
         #self.perform_destroy(objecto)
-        return Response(status=204)
-
-        
-    
+        return Response(status=204)   
 
     
 
