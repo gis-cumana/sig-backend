@@ -3,6 +3,7 @@ from django.contrib import admin
 from rest_framework.documentation import include_docs_urls
 from .enrrutador import RaizRouter
 from capas.views import CapasRecursos, CategoriasRecursos,\
+<<<<<<< HEAD
                         AtributosRecursos, ParametrosRecursos, ImagenRecursos
 from capas.views import CasosRecursos
 from capas.views import UsuariosRecursos
@@ -13,6 +14,11 @@ from capas.views import ConsejoComunalRecursos, CensoRecursos
 from capas.views import GruposRecursos
 
 
+=======
+                        AtributosRecursos, ParametrosRecursos
+from capas.views import CasosRecursos, SucesosRecursos, UsuariosRecursos,\
+                        TipologiaRecursos
+>>>>>>> 49d150195570622c726f4b0f5ed61a13debfb35d
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -25,6 +31,7 @@ router.register("parametros", ParametrosRecursos)
 router.register("casos", CasosRecursos)
 router.register("tipologias", TipologiaRecursos)
 router.register("usuarios", UsuariosRecursos)
+<<<<<<< HEAD
 router.register("imagenes", ImagenRecursos)
 router.register("geounidades", GeoUnidadRecursos)
 router.register("comunidades", ComunidadRecursos)
@@ -36,6 +43,11 @@ router.register("consejosComunales", ConsejoComunalRecursos)
 router.register("censos", CensoRecursos)
 router.register("territorios", TerritorioRecursos)
 router.register("grupos", GruposRecursos)
+=======
+router.register("sucesos", SucesosRecursos)
+
+
+>>>>>>> 49d150195570622c726f4b0f5ed61a13debfb35d
 
 urlpatterns = [
     url(r'^', include(router.urls)),

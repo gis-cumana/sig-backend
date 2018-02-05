@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.gis',
     'capas.apps.CapasConfig',
+<<<<<<< HEAD
     'rest_framework.authtoken',
     'rest_auth',
     'django.contrib.auth',
@@ -53,6 +54,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.twitter',
     
+=======
+    'rest_framework_docs',
+>>>>>>> 49d150195570622c726f4b0f5ed61a13debfb35d
 ]
 
 SITE_ID = 2
@@ -105,7 +109,7 @@ DATABASES = {
             'NAME': 'gis',                      # Or path to database file if using sqlite3.
             # The following settings are not used with sqlite3:
             'USER': 'postgres',
-            'PASSWORD': '123457',
+            'PASSWORD': 'admin',
             'HOST': 'localhost',                      # Empty for localhost through domain sockets or           '127.0.0.1' for localhost through TCP.
             'PORT': '5432',                      # Set to empty string for default.
         }

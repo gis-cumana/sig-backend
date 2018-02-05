@@ -18,6 +18,7 @@ class CapasRecursos(viewsets.ModelViewSet):
     serializer_class = CapaSerializador
 
     def destroy(self, request, *args, **kwargs):
+ 
         objeto = self.get_object()
         modelo = crear_modelo(objeto.nombre)
 
@@ -43,7 +44,12 @@ class CapasRecursos(viewsets.ModelViewSet):
             return Response(data)
 
         def update(request, modelo):
-            datos = request.data.get("data").replace("'", "\"")
+            datos = request.data.get("data")
+            if datos is None:
+                raise ValidationError({"data":"es necesario en geojson"})
+            if not isinstance(datos, str):
+                raise ValidationError({"data":"debe ser un str"})
+            datos = datos.replace("'", "\"")
             try:
                 datos = json.loads(datos)
                 geo = pygeoj.load(data=datos)
@@ -55,8 +61,10 @@ class CapasRecursos(viewsets.ModelViewSet):
                     if nuevo is not None or modificar is not None or eliminar is not None:
                         data.append(i)
                 geo._data["features"] = data
+                
                 importer = CapaImporter(geo, None, None, verificar_nombre=False,
                                         verificar_categoria=False)
+
                 importer.alterar_registros(modelo)
 
                 queryset = modelo.objects.all()
@@ -64,14 +72,13 @@ class CapasRecursos(viewsets.ModelViewSet):
                                  geometry_field='geom')
                 data = json.loads(data)
                 return Response(data)
-            except json.decoder.JSONDecodeError as e:
-                raise ValidationError({"mensaje": "json invalido, "+e})
-            except ValueError:
+            #except json.decoder.JSONDecodeError as e:
+            #    raise ValidationError({"mensaje": "json invalido, "+e})
+            except ValueError as e:
+                print(e)
                 raise ValidationError({"mensaje": "el geojson es invalido"})
-
-
+        
         modelo = crear_modelo(nombre)
-
         if request.method == "GET":
             return get(request, modelo)
         elif request.method == "PUT":
@@ -91,6 +98,7 @@ class CapasRecursos(viewsets.ModelViewSet):
            raise ValidationError({"nombre": "es requerido"})
         if categoria is None:
             categoria = 1
+        capa = json.loads(capa)
         geo = pygeoj.load(data=capa)
         importer = CapaImporter(geo, nombre, categoria)
         importer.importar_tabla()

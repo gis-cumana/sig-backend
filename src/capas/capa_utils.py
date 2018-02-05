@@ -89,7 +89,6 @@ class CapaImporter():
                 raise ValidationError({"nombre": "ya existe una capa registrada con este nombre"})
             return nombre
         except ValidationError as e:
-            connection.rollback()
             raise ValidationError(e)
 
     def validar_capa(self):
@@ -104,7 +103,6 @@ class CapaImporter():
                 raise ValidationError("la capa tiene multiples tipos de geometria")
             tipo = item.geometry.type
         if Capas.objects.filter(nombre=self.nombre.lower()).count() > 0:
-            connection.rollback()
             raise ValidationError({"mensaje": "ya existe la capa registrada"})
 
     def importar_tabla(self):
@@ -126,7 +124,7 @@ class CapaImporter():
         esquema = BaseDatabaseSchemaEditor(connection)
         esquema.deferred_sql = []
         esquema.create_model(modelo)
-        self.insertar_registros(modelo)
+        self.alterar_registros_nuevo(modelo)
         self.registrar_estructura(attrs)
 
     def alterar_registros(self, modelo):
@@ -137,14 +135,21 @@ class CapaImporter():
                 self.insertar_registros(modelo, obj)
             if obj.properties.get("eliminar"):
                 self.eliminar_registros(modelo, obj)
+    
+    def alterar_registros_nuevo(self, modelo):
+        for obj in self.capa:
+            self.insertar_registros(modelo, obj, new=True)
 
-    def insertar_registros(self, modelo, obj):
+    def insertar_registros(self, modelo, obj, new=False):
         datos = {}
-        obj.properties.pop("nuevo")
+        if not new:
+            obj.properties.pop("nuevo")
         if obj.properties.get("pk") is not None:
             obj.properties.pop("pk")
         [datos.update({key.lower(): value}) for key, value in obj.properties.items()]
+        print(obj.geometry.type)
         valor = self.get_valor(obj.geometry.type, obj.geometry.coordinates)
+        
         datos.update({"geom": valor})
         modelo.objects.create(**datos)
 
