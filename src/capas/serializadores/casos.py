@@ -23,7 +23,7 @@ class CasosListSerializador(serializers.ModelSerializer):
     class Meta:
         model = Casos
         fields = ("lng", "lat", "descripcion", "hora", "fecha", "suceso", "usuario", "link", "imagenes",
-                  "visible", "fecha_creado", "hora_creado")
+                  "visible", "fecha_creado", "hora_creado", "id")
         read_only_fields = ("visible", "fecha_creado", "hora_creado")
 
 class CasosSerializador(serializers.ModelSerializer):
