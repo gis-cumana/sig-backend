@@ -6,7 +6,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
 
-MEDIA_URL = '/media/'  
+MEDIA_URL = '/media/'
 
 SECRET_KEY = 'e*2n!dvk%g5_h_5x)=18l052_!4utghy6+$eg*z7*z9c9x-)c)'
 
@@ -21,13 +21,11 @@ FILE_UPLOAD_HANDLERS = {
 }
 
 AUTHENTICATION_BACKENDS = (
-    
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
 
     # allauth specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend'
-    
 )
 
 
@@ -41,7 +39,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.gis',
     'capas.apps.CapasConfig',
-<<<<<<< HEAD
     'rest_framework.authtoken',
     'rest_auth',
     'django.contrib.auth',
@@ -50,18 +47,15 @@ INSTALLED_APPS = [
     'allauth.account',
     'rest_auth.registration',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.facebook',     
+    'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.twitter',
-    
-=======
-    'rest_framework_docs',
->>>>>>> 49d150195570622c726f4b0f5ed61a13debfb35d
+    'rest_framework_docs'
 ]
 
 SITE_ID = 2
 
-MIDDLEWARE = [  
+MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -69,8 +63,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',    
-
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 ROOT_URLCONF = 'gis.urls'
@@ -93,9 +86,8 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',                                
+                'django.contrib.auth.context_processors.auth',
             ],
-            
         },
 
     },
@@ -161,8 +153,7 @@ STATIC_URL = '/static/'
 
 """ SERIALIZER UPDATE LOCAL ACCOUNT"""
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'capas.serializadores.UserSerializer',   
-
+    'USER_DETAILS_SERIALIZER': 'capas.serializadores.UserSerializer',
 }
 
 
@@ -183,14 +174,13 @@ SOCIALACCOUNT_PROVIDERS = {
         {
             'METHOD': 'js_sdk',
             'SCOPE': ['email',],
-            
         },
     'google':
         {
             'SCOPE': [ 'profile', 'email', ],
             'AUTH_PARAMS': { 'access_type': 'online', }
         }
-    } 
+    }
 
 SOCIAL_AUTH_FACEBOOK_KEY = '108416949950283'  # App ID
 SOCIAL_AUTH_FACEBOOK_SECRET ='19114b1c0aaf3ba2e2328fcc7fd0e8be' #app key

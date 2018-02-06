@@ -180,19 +180,10 @@ class Imagen(models.Model):
     imagen = models.TextField()
 
 class TipologiaConstructiva(models.Model):
-<<<<<<< HEAD
-   
-    descripcion = models.CharField(max_length=255)    
-    nombre = models.CharField(max_length=255, unique=True)
-    estandar = models.CharField(max_length=255)    
-    anyo = models.IntegerField()
-=======
-
     descripcion = models.CharField(max_length=255)
     nombre_centro = models.CharField(max_length=255, unique=True)
     estandar = models.CharField(max_length=255)
     anyo = models.CharField(max_length=4)
->>>>>>> 49d150195570622c726f4b0f5ed61a13debfb35d
 
     def __str__(self):
         return self.nombre
@@ -201,7 +192,7 @@ class TipologiaConstructiva(models.Model):
 
 """ Probablemente sea eliminada aunque es lo correcto para gis """
 class Territorio(models.Model):
-    geom = models.PolygonField(null=True, blank=True)          
+    geom = models.PolygonField(null=True, blank=True)
     nombre = models.CharField(max_length=255)
     tipo = models.CharField(max_length=60)
     poblacionCenso = models.IntegerField(default=0)
@@ -210,7 +201,7 @@ class Territorio(models.Model):
     municipio =models.CharField(max_length=255, blank=True)
     parroquia =models.CharField(max_length=255, blank=True)
     parentid = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='dependencias',)    
-    
+
 class GeoUnidad(models.Model):
     nombre = models.CharField(max_length=255)
     descripcion = models.CharField(max_length=255, null=True, blank=True)
@@ -220,14 +211,13 @@ class GeoUnidad(models.Model):
     indiceRiesgo = models.FloatField(default=0)
     fuente = models.CharField(max_length=255, null=True)
     anyo = models.IntegerField(default=1900)
-    geom = models.PolygonField()          
+    geom = models.PolygonField()
     status = models.CharField(max_length=20, null=True, blank=True)
     territorio = models.ForeignKey(Territorio, on_delete=models.CASCADE, related_name='geounidades')    
 
     @property
     def eliminable(self):
         return not (self.comunidades.all().exists() or self.riesgos.all().exists())
-
 
 
 class Riesgos(models.Model):
@@ -242,7 +232,6 @@ class Riesgos(models.Model):
 
 
 class Comunidad(models.Model):
-    
     geom = models.PolygonField()
     nombre = models.CharField(max_length=255)
     descripcion = models.CharField(max_length=255, null=True,blank=True)
@@ -366,8 +355,7 @@ class Censo(models.Model):
     consejocomunal = models.ForeignKey(ConsejoComunal, on_delete=models.CASCADE, related_name='censo') 
 
 
-
 class Usuario(models.Model):
     institucion =  models.CharField(max_length=255,blank=True,null=True)
-    user = models.OneToOneField(User)  
-    grupos = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='usuarios') 
+    user = models.OneToOneField(User)
+    grupos = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='usuarios')
