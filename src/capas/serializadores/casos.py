@@ -3,7 +3,6 @@ from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from rest_framework.exceptions import ValidationError
 from datetime import datetime, date, time
-from .usuarios import UsuarioSerializador
 from django.contrib.gis.geos import Point
 
 
@@ -23,8 +22,8 @@ class CasosListSerializador(serializers.ModelSerializer):
     class Meta:
         model = Casos
         fields = ("lng", "lat", "descripcion", "hora", "fecha", "suceso", "usuario", "link", "imagenes",
-                  "visible", "fecha_creado", "hora_creado", "id")
-        read_only_fields = ("visible", "fecha_creado", "hora_creado")
+                  "visible", "fecha_creado", "hora_creado","correo", "id")
+        read_only_fields = ("visible", "fecha_creado", "hora_creado", "correo")
 
 class CasosSerializador(serializers.ModelSerializer):
 
@@ -55,7 +54,9 @@ class CasosSerializador(serializers.ModelSerializer):
 
     def registrar_imagenes(self, caso, imagenes):
         for i in imagenes:
-            Imagen.objects.create(**i, caso=caso)
+            imagen = Imagen(**i)
+            imagen.caso = caso
+            imagen.save()
 
     def update(self, instance, datos):
 

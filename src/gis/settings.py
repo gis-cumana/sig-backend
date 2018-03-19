@@ -110,7 +110,7 @@ DATABASES = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
     ),
      'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
@@ -152,9 +152,9 @@ STATIC_URL = '/static/'
 """ PARA LA ACTUALIZACION Y REGISTROS DE USUARIOS """
 
 """ SERIALIZER UPDATE LOCAL ACCOUNT"""
-REST_AUTH_SERIALIZERS = {
+"""REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'capas.serializadores.UserSerializer',
-}
+}"""
 
 
 

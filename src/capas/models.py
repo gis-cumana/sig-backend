@@ -156,7 +156,6 @@ class Parametro(models.Model):
 class Suceso(models.Model):
     nombre = models.CharField(max_length=30)
     fecha = models.DateField()
-    hora = models.TimeField()
     usuario = models.ForeignKey(User, null=True, on_delete=models.CASCADE, related_name='sucesos')
 
     def __str__(self):
@@ -174,6 +173,10 @@ class Casos(models.Model):
     geom = models.PointField()
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='casos')
     suceso = models.ForeignKey(Suceso, null=True, on_delete=models.CASCADE, related_name='casos')
+    
+    @property
+    def correo(self):
+        return self.usuario.email
 
 class Imagen(models.Model):
     caso = models.ForeignKey(Casos, on_delete=models.CASCADE, related_name='imagenes')
@@ -356,6 +359,6 @@ class Censo(models.Model):
 
 
 class Usuario(models.Model):
-    institucion =  models.CharField(max_length=255,blank=True,null=True)
+    institucion =  models.CharField(max_length=255, null=True)
     user = models.OneToOneField(User)
-    grupos = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='usuarios')
+    rol = models.CharField(max_length=255, default="Usuario", null=True)

@@ -1,17 +1,17 @@
+"""
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework.response import Response
-from capas.serializadores.usuarios import UsuarioSerializador
 from capas.models import Usuario
 
 class UsuariosRecursos(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializador
+    serializer_class = UserDetailsSerializer
 
     def get_serializer_class(self):
         if self.action in ['list', "retrieve"]:
-            return UsuarioSerializador
-        return UsuarioSerializador
+            return UserDetailsSerializer
+        return UserDetailsSerializer
    
    
     def destroy(self, request, *args, **kwargs):
@@ -20,6 +20,6 @@ class UsuariosRecursos(viewsets.ModelViewSet):
         objeto.save()
         #self.perform_destroy(objecto)
         return Response(status=204)   
-
+"""
     
 

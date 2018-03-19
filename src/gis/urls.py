@@ -8,7 +8,7 @@ from capas.views import TerritorioRecursos, GeoUnidadRecursos, ComunidadRecursos
 from capas.views import ViviendaRecursos, CentroSaludEmergenciaRecursos, CentroEducativoRecursos
 from capas.views import ConsejoComunalRecursos, CensoRecursos
 from capas.views import GruposRecursos, AtributosRecursos, ParametrosRecursos
-from capas.views import CasosRecursos, SucesosRecursos, UsuariosRecursos
+from capas.views import CasosRecursos, SucesosRecursos
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -20,7 +20,7 @@ router.register("atributos", AtributosRecursos)
 router.register("parametros", ParametrosRecursos)
 router.register("casos", CasosRecursos)
 router.register("tipologias", TipologiaRecursos)
-router.register("usuarios", UsuariosRecursos)
+#router.register("usuarios", UsuariosRecursos)
 #router.register("imagenes", ImagenRecursos)
 router.register("geounidades", GeoUnidadRecursos)
 router.register("comunidades", ComunidadRecursos)
@@ -39,10 +39,10 @@ router.register("sucesos", SucesosRecursos)
 urlpatterns = [
     url(r'^', include(router.urls)),
     #url(r'^api-auth/', include('rest_framework.urls')),
-    url(r'^rest-auth/', include('rest_auth.urls')),
-    #url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
-    url(r'^accounts/', include('allauth.urls')),
-    url(r'^admin/', include(admin.site.urls))
+    url(r'^auth/', include('rest_auth.urls')),
+    url(r'^auth/registration/', include('rest_auth.registration.urls')),
+    #url(r'^accounts/', include('allauth.urls')),
+    #url(r'^admin/', include(admin.site.urls))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

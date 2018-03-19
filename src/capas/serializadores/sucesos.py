@@ -11,4 +11,4 @@ class SucesosListaSerialializador(serializers.ModelSerializer):
     casos = CasosListSerializador(many=True)
     class Meta:
         model = Suceso
-        fields = ("id", "nombre", "fecha", "hora", "casos")
+        fields = ("id", "nombre", "fecha", "casos")

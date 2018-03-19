@@ -28,9 +28,9 @@ class CasosRecursos(viewsets.ModelViewSet):
     @transaction.atomic
     @list_route(methods=['put'], url_path=r'(?P<id_caso>[^/]+)/visible', permission_classes=[AllowAny])
     def visible(self, request, id_caso):
-        caso = queryset.filter(id=id_caso).first()
+        caso = self.queryset.filter(id=id_caso).first()
         if caso is None:
             raise ValidationError({"mensaje": "caso no existe"})
-        caso.visible = not caso.visible
+        caso.visible = False if caso.visible else True;
         caso.save()
         return Response()

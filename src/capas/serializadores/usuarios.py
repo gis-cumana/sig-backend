@@ -1,3 +1,4 @@
+"""
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -18,6 +19,7 @@ try:
     from allauth.socialaccount.providers.base import AuthProcess
 except ImportError:
     raise ImportError("allauth needs to be added to INSTALLED_APPS.")
+
 
 
 class UsuarioSerializador(serializers.ModelSerializer):
@@ -78,7 +80,6 @@ class UsuarioSerializador(serializers.ModelSerializer):
         return user
     
     
-
 class UserSerializer(UserDetailsSerializer):
 
 
@@ -122,7 +123,7 @@ class UserSerializer(UserDetailsSerializer):
 
         return instance
 
-
+"""
 
 class UserDetailsSerializer(serializers.ModelSerializer):
     

@@ -12,8 +12,6 @@ from .centrosaludemergencia import CentroSaludEmergenciaSerializador, CentroSalu
 from .centroeducativo import CentroEducativoSerializador, CentroEducativoListSerializador
 from .consejocomunal import ConsejoComunalSerializador, ConsejoComunalListSerializador
 from .censo import CensoSerializador, CensoListSerializador
-from .usuarios import UserSerializer, UserDetailsSerializer
 from .grupos import GruposSerializador, GruposListSerializador
-from .usuarios import UsuarioSerializador
 from .tipologia import TipologiaSerializador, TipologiaListSerializador
 from .sucesos import SucesosSerialializador
