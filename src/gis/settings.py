@@ -20,14 +20,6 @@ FILE_UPLOAD_HANDLERS = {
     'django.core.files.uploadhandler.TemporaryFileUploadHandler',
 }
 
-AUTHENTICATION_BACKENDS = (
-    # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
-
-    # allauth specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend'
-)
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -118,23 +110,6 @@ REST_FRAMEWORK = {
 }
 
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-
-
 LANGUAGE_CODE = 'es-AR'
 
 TIME_ZONE = 'UTC'
@@ -148,39 +123,22 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-""" CONFIGURACION ADICIONAL DE AUTH PARA EL MODELO DE USUARIOS """
-""" PARA LA ACTUALIZACION Y REGISTROS DE USUARIOS """
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'capas.serializadores.RegisterSerializer',
+}
 
-""" SERIALIZER UPDATE LOCAL ACCOUNT"""
-"""REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'capas.serializadores.UserSerializer',
-}"""
+REST_AUTH_SERIALIZERS = {
+     'USER_DETAILS_SERIALIZER': 'capas.serializadores.UserDetailsSerializer'
+}
 
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    "django.contrib.auth.backends.ModelBackend",
 
-
-""" AGREGAMOS ESTOS CAMPOS PARA PERMITIR LA VERIFICACION POR EMAIL """
-
-#ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = "none"
+    # `allauth` specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-SOCIALACCOUNT_QUERY_EMAIL = True
-LOGIN_REDIRECT_URL = "/"
-
-""" CONFIGURACION PARA SOCIAL ACCOUNT """
-SOCIALACCOUNT_PROVIDERS = {
-    'facebook':
-        {
-            'METHOD': 'js_sdk',
-            'SCOPE': ['email',],
-        },
-    'google':
-        {
-            'SCOPE': [ 'profile', 'email', ],
-            'AUTH_PARAMS': { 'access_type': 'online', }
-        }
-    }
-
-SOCIAL_AUTH_FACEBOOK_KEY = '108416949950283'  # App ID
-SOCIAL_AUTH_FACEBOOK_SECRET ='19114b1c0aaf3ba2e2328fcc7fd0e8be' #app key
+#ACCOUNT_USERNAME_REQUIRED = False

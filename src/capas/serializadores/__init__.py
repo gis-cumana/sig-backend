@@ -15,3 +15,4 @@ from .censo import CensoSerializador, CensoListSerializador
 from .grupos import GruposSerializador, GruposListSerializador
 from .tipologia import TipologiaSerializador, TipologiaListSerializador
 from .sucesos import SucesosSerialializador
+from .usuarios import RegisterSerializer, UserDetailsSerializer

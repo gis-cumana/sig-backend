@@ -123,7 +123,7 @@ class UserSerializer(UserDetailsSerializer):
 
         return instance
 
-"""
+
 
 class UserDetailsSerializer(serializers.ModelSerializer):
     
@@ -136,3 +136,78 @@ class UserDetailsSerializer(serializers.ModelSerializer):
 
 
 
+"""
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from capas.models import Usuario
+from allauth.account.adapter import get_adapter
+from allauth.account import app_settings as allauth_settings
+from allauth.utils import (email_address_exists)
+from allauth.account.utils import setup_user_email
+
+from django.db import transaction
+
+class RegisterSerializer(serializers.ModelSerializer):
+
+    email = serializers.EmailField(required=True, source="user.email")
+    password = serializers.CharField(required=True, style={'input_type': 'password'}, source="user.password")
+    first_name = serializers.CharField(required=True, source="user.first_name")
+    last_name = serializers.CharField(required=True, source="user.last_name")
+
+    class Meta:
+        model = Usuario
+        fields = ("id", "institucion", "email", "password", "first_name", "last_name",)
+
+    def save(self, request):
+        return Usuario()
+
+    def validate_email(self, email):
+        email = get_adapter().clean_email(email)
+        if allauth_settings.UNIQUE_EMAIL:
+            if email and email_address_exists(email):
+                raise serializers.ValidationError(
+                    ("A user is already registered with this e-mail address."))
+        return email
+
+    def validate_password(self, password):
+        return get_adapter().clean_password(password)
+
+    def get_cleaned_data(self):
+        user = self.validated_data.get("user")
+        return {
+            'password1': user.get('password', ''),
+            'email': user.get('email', ''),
+            'first_name': user.get('first_name', ''),
+            'last_name': user.get('last_name', ''),
+            'institucion': self.validated_data.get('institucion', '')
+        }
+
+    @transaction.atomic
+    def save(self, request):
+        adapter = get_adapter()
+        user = adapter.new_user(request)
+        self.cleaned_data = self.get_cleaned_data()
+        adapter.save_user(request, user, self)
+        Usuario.objects.create(user=user, rol="Usuario", institucion=self.cleaned_data.get("institucion"))
+        setup_user_email(request, user, [])
+        return user
+
+class UserDetailsSerializer(serializers.ModelSerializer):
+    institucion = serializers.CharField(required=True, source="usuario.institucion")
+    rol = serializers.CharField(read_only=True, source="usuario.rol")
+
+    class Meta:
+        model = User
+        fields = ('pk', 'email', 'first_name', 'last_name', 'institucion', 'rol')
+        read_only_fields = ('email',)
+
+    def update(self, instance, data):
+        usuario = data.pop("usuario")
+        for key, value in data.items():
+            setattr(instance, key, value)
+        instance.first_name.title()
+        instance.last_name.title()
+        instance.save()
+        instance.usuario.institucion = usuario.get("institucion")
+        instance.usuario.save()
+        return instance
