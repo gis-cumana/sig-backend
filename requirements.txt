@@ -15,7 +15,7 @@ django-environ==0.4.4
 django-filter==1.0.4
 django-rest-auth==0.9.3
 django-rest-framework-docs==0.1.7
-djangorestframework==3.6.4
+djangorestframework==3.11.2
 djangorestframework-gis==0.12
 idna==2.6
 itypes==1.1.0
